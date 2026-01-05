@@ -35,19 +35,19 @@
 
         <!-- Tabs -->
         <nav class="tabs">
-            <button class="tab all">All Orders (0)</button>
-            <button class="tab pending">Pending (0)</button>
-            <button class="tab preparing">Preparing (0)</button>
-            <button class="tab ready">Ready (0)</button>
-            <button class="tab delivered">Delivered (0)</button>
+            <button class="tab all" data-status="all">All Orders (0)</button>
+            <button class="tab pending" data-status="pending">Pending (0)</button>
+            <button class="tab preparing" data-status="preparing">Preparing (0)</button>
+            <button class="tab ready" data-status="ready">Ready (0)</button>
+            <button class="tab delivered" data-status="delivered">Delivered (0)</button>
         </nav>
 
     </div>
 </div>
 
 <!-- MAIN CONTENT -->
-<div class="container">
-    <main class="content">
+<main class="container">
+    <div class="content">
         <div class="orders">
 
             <div class="order-card" data-status="pending">
@@ -75,7 +75,7 @@
                 </div>
 
                 <button class="btn-primary" data-status="pending">📦 Start Preparing</button>
-                <button class="btn-danger">🗑 Delete Order</button>
+                <button class="btn-delete">🗑 Delete Order</button>
             </div>
 
             <div class="order-card" data-status="preparing">
@@ -111,7 +111,7 @@
                 </div>
 
                 <button class="btn-primary" data-status="preparing">✅ Mark as ready</button>
-                <button class="btn-danger">🗑 Delete Order</button>
+                <button class="btn-delete">🗑 Delete Order</button>
             </div>
 
             <div class="order-card" data-status="ready">
@@ -139,7 +139,7 @@
                 </div>
 
                 <button class="btn-primary" data-status="ready">🚚 Mark as delivered</button>
-                <button class="btn-danger">🗑 Delete Order</button>
+                <button class="btn-delete">🗑 Delete Order</button>
             </div>
 
             <div class="order-card" data-status="delivered">
@@ -170,7 +170,7 @@
                     <strong>$31.97</strong>
                 </div>
 
-                <button class="btn-danger">🗑 Delete Order</button>
+                <button class="btn-delete">🗑 Delete Order</button>
             </div>
 
 
@@ -184,7 +184,7 @@
             <p>No orders have been placed yet.</p>
         </div>
         -->
-    </main>
+    </div>
 </div>
 
 <script src="script.js"></script>
