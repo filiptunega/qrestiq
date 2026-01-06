@@ -3,6 +3,8 @@ const pendingTab = document.querySelector(".tab.pending");
 const preparingTab = document.querySelector(".tab.preparing");
 const readyTab = document.querySelector(".tab.ready");
 const deliveredTab = document.querySelector(".tab.delivered");
+const clearAllBtn = document.querySelector(".btn-clear");
+let oldStatus = "all";
 
 function updateTabCounters() {
     const allCount = document.querySelectorAll(".order-card").length;
@@ -18,7 +20,9 @@ function updateTabCounters() {
     deliveredTab.textContent = `Delivered (${deliveredCount})`;
 }
 
+
 updateTabCounters();
+
 
 function statusFilter(click) {
     const tabButton = click.currentTarget;
@@ -30,14 +34,56 @@ function statusFilter(click) {
             <h2>No orders found</h2>
             <p>No orders have been placed yet.</p>
         `;
+
+    // odstráni active zo všetkých tabov
+    document.querySelectorAll(".tab").forEach(tab => {
+        tab.classList.remove("active");
+    });
+
+    // pridá active na kliknutý tab
+    tabButton.classList.add("active");
+
     const filteredCards = document.querySelectorAll(`.order-card[data-status="${tabButton.dataset.status}"]`);
+    oldStatus=tabButton.dataset.status; 
     // Odstráni starý empty-state, ak existuje
     const existingEmpty = document.querySelector(".empty-state");
     if (existingEmpty) existingEmpty.remove();
 
     if (tabButton.dataset.status === "all") {
         cards.forEach(card => card.style.display = "block");
-        if(allTAb.length === 0) document.querySelector(".content").appendChild(emptyState);
+        if(document.querySelectorAll(".order-card").length === 0) document.querySelector(".content").appendChild(emptyState);
+        return;
+    }
+
+    cards.forEach(card => card.style.display = "none");
+
+    
+
+    if(filteredCards.length === 0){
+        document.querySelector(".content").appendChild(emptyState); 
+    } else {
+        filteredCards.forEach(card => card.style.display = "block");
+    }
+}
+
+
+function statusFilterUpadate(status) {
+    const cards = document.querySelectorAll(".order-card");
+    const emptyState = document.createElement("div");
+        emptyState.classList.add("empty-state");
+        emptyState.innerHTML =`
+            <div class="icon">!</div>
+            <h2>No orders found</h2>
+            <p>No orders have been placed yet.</p>
+        `;
+    const filteredCards = document.querySelectorAll(`.order-card[data-status="${status}"]`);
+    // Odstráni starý empty-state, ak existuje
+    const existingEmpty = document.querySelector(".empty-state");
+    if (existingEmpty) existingEmpty.remove();
+
+    if (status === "all") {
+        cards.forEach(card => card.style.display = "block");
+        if(document.querySelectorAll(".order-card").length === 0) document.querySelector(".content").appendChild(emptyState);
         return;
     }
 
@@ -102,8 +148,7 @@ document.addEventListener("click", (c) => {
         statusText.className = `status ${nextStatus}`;
 
         updateTabCounters();
-        const activeTab = document.querySelector(".tab.active") || document.querySelector(".tab.all");
-        statusFilter({ currentTarget: activeTab });
+        statusFilterUpadate(oldStatus);
  
     }
 
@@ -112,18 +157,13 @@ document.addEventListener("click", (c) => {
         const card = btn.closest(".order-card");
         if (card) { 
             card.remove();
-            const activeTab = document.querySelector(".tab.active") || document.querySelector(".tab.all");
-            statusFilter({ currentTarget: activeTab });
+            statusFilterUpadate(oldStatus);
             updateTabCounters(); 
         }    
     }
 
 });
 
-
-
-// --- Clear All popUp ---
-const clearAllBtn = document.querySelector(".btn-clear");
 
 clearAllBtn.addEventListener("click", () => {
     // Vytvor pop up okno
@@ -148,7 +188,6 @@ clearAllBtn.addEventListener("click", () => {
         document.querySelectorAll(".order-card").forEach(card => card.remove()); // Odstráni všetky order cards
         popUp.remove(); // zatvor pop up okno
         updateTabCounters(); 
-        const activeTab = document.querySelector(".tab.active") || document.querySelector(".tab.all");
-        statusFilter({ currentTarget: activeTab });
+        statusFilterUpadate("all");
     });
 });

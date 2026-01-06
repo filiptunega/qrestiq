@@ -110,8 +110,8 @@ body {
 }
 
 .tab.all {
-    background-color: var(--primary);
-    color: var(--white);
+    background-color: var(--bg-cl);
+    color: var(--primary);
 }
 
 .tab.pending {
@@ -133,6 +133,12 @@ body {
     background-color: #e5e7eb;
     color: var(--primary);
 }
+
+.tab.active {
+    background-color: var(--primary);
+    color: var(--white);
+}
+
 
 /* Content */
 .content {
