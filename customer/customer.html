@@ -2,61 +2,97 @@
 <html lang="en">
 
 <head>
+    <!-- základné nastavenia stránky -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- názov stránky v záložke -->
     <title>Qrestiq – Menu with Scroll Navigation</title>
 
+    <!-- Google font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS pre customer stránku -->
     <link rel="stylesheet" href="customer.css" />
 </head>
 
 <body>
 
+    <!-- HLAVIČKA STRÁNKY -->
     <header>
         <div class="top">
-            <div class="brand"><img src="../img/logo.png" alt="Qrestiq Logo" style="width: 32px; height: 32px;" /> Qrestiq</div>
+            <!-- logo + názov appky -->
+            <div class="brand">
+                <img src="../img/logo.png" alt="Qrestiq Logo" style="width: 32px; height: 32px;" />
+                Qrestiq
+            </div>
         </div>
+
+        <!-- input na zadanie čísla stola -->
         <div class="input">
             <input placeholder="Enter table number or scan QR" />
+
+            <!-- chyba pri neplatnom stole -->
             <div class="error">Table not available</div>
         </div>
     </header>
 
+    <!-- CHIPY S KATEGÓRIAMI (Pizza, Drinks, atď.) -->
     <div class="chips" id="categories"></div>
+
+    <!-- HLAVNÉ MENU – sem sa dynamicky vykreslí celý jedálny lístok -->
     <main id="menu"></main>
 
+    <!-- PLÁVAJÚCE TLAČIDLO KOŠÍKA -->
     <button class="floating-cart" id="openCart">
         <img src="../img/wCart.png" alt="Cart" style="width: 40px; height: 40px;" />
+
+        <!-- počet položiek v košíku -->
         <span id="cartCount" style="
-            position: absolute;
-            top: -6px;
-            right: -6px;
-            background: red;
-            color: white;
-            font-size: 12px;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            display: none;
-        ">0</span>
+                position: absolute;
+                top: -6px;
+                right: -6px;
+                background: red;
+                color: white;
+                font-size: 12px;
+                width: 18px;
+                height: 18px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                display: none;
+            ">
+            0
+        </span>
     </button>
 
+    <!-- KOŠÍK (MODAL / OVERLAY) -->
     <div class="cart" id="cart">
         <header>
+            <!-- nadpis košíka -->
             <strong>Your Order</strong>
+
+            <!-- zatvorenie košíka -->
             <button onclick="toggleCart(false)">✕</button>
         </header>
+
         <main>
+            <!-- položky v košíku -->
             <div id="cartItems"></div>
+
+            <!-- poznámka k objednávke -->
             <textarea id="note" placeholder="Add a note to your order..."></textarea>
         </main>
-        <button class="submit" id="submitBtn">Submit Order – €0.00</button>
+
+        <!-- tlačidlo na odoslanie objednávky -->
+        <button class="submit" id="submitBtn">
+            Submit Order – €0.00
+        </button>
     </div>
 
+    <!-- JS logika pre menu, košík, stoly atď. -->
     <script src="customer.js"></script>
 </body>
 
