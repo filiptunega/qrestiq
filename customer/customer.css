@@ -150,8 +150,8 @@ main {
     background: var(--primary);
     color: #fff;
     border-radius: 50%;
-    width: 56px;
-    height: 56px;
+    width: 70px;
+    height: 70px;
     border: none;
     font-size: 22px;
     z-index: 5;
