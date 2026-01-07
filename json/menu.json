@@ -1,0 +1,716 @@
+{
+    "Pizza": [
+        {
+            "id": 1,
+            "name": "Margherita",
+            "desc": "Tomato, mozzarella, basil",
+            "price": 8.99,
+            "img": "https://images.unsplash.com/photo-1601924582971-3b1774a8f52d"
+        },
+        {
+            "id": 2,
+            "name": "Quattro Formaggi",
+            "desc": "Four cheese blend",
+            "price": 11.99,
+            "img": "https://images.unsplash.com/photo-1585238341965-c0f06d64c9ad"
+        },
+        {
+            "id": 3,
+            "name": "Pepperoni",
+            "desc": "Tomato sauce, mozzarella, pepperoni",
+            "price": 10.99,
+            "img": "https://images.unsplash.com/photo-1604917877933-9f7626cefcd4"
+        },
+        {
+            "id": 4,
+            "name": "Hawaiian",
+            "desc": "Ham, pineapple, mozzarella",
+            "price": 11.49,
+            "img": "https://images.unsplash.com/photo-1552332386-f8dd00dc2f85"
+        },
+        {
+            "id": 5,
+            "name": "Veggie Delight",
+            "desc": "Peppers, olives, onions",
+            "price": 9.99,
+            "img": "https://images.unsplash.com/photo-1604918177227-7fa3f14a9e90"
+        },
+        {
+            "id": 6,
+            "name": "BBQ Chicken",
+            "desc": "BBQ sauce, chicken, onions",
+            "price": 12.99,
+            "img": "https://images.unsplash.com/photo-1627308595229-7830a5c91f9f"
+        },
+        {
+            "id": 7,
+            "name": "Meat Lovers",
+            "desc": "Ham, bacon, sausage",
+            "price": 13.99,
+            "img": "https://images.unsplash.com/photo-1601924582975-f4e9cff3d6b0"
+        },
+        {
+            "id": 8,
+            "name": "Four Seasons",
+            "desc": "Artichokes, mushrooms, olives",
+            "price": 12.49,
+            "img": "https://images.unsplash.com/photo-1617718131497-70bd62ccfde5"
+        },
+        {
+            "id": 9,
+            "name": "Spinach & Feta",
+            "desc": "Spinach, feta",
+            "price": 11.49,
+            "img": "https://images.unsplash.com/photo-1589923188900-40fdaae146a3"
+        },
+        {
+            "id": 10,
+            "name": "Truffle Mushroom",
+            "desc": "Truffle oil, mushrooms",
+            "price": 14.99,
+            "img": "https://images.unsplash.com/photo-1586190848861-99aa4a171e90"
+        },
+        {
+            "id": 11,
+            "name": "Capricciosa",
+            "desc": "Ham, mushrooms, artichokes",
+            "price": 13.49,
+            "img": "https://images.unsplash.com/photo-1594007654729-407eedc4be65"
+        },
+        {
+            "id": 12,
+            "name": "Prosciutto",
+            "desc": "Prosciutto, arugula",
+            "price": 14.49,
+            "img": "https://images.unsplash.com/photo-1604382355076-abcdef123456"
+        },
+        {
+            "id": 13,
+            "name": "Mexicana",
+            "desc": "Spicy beef, jalapeños",
+            "price": 12.99,
+            "img": "https://images.unsplash.com/photo-1604382355076-111aaa222bbb"
+        },
+        {
+            "id": 14,
+            "name": "Pesto Pizza",
+            "desc": "Pesto, mozzarella, tomatoes",
+            "price": 12.49,
+            "img": "https://images.unsplash.com/photo-1604382355076-987654321abc"
+        },
+        {
+            "id": 15,
+            "name": "Greek Pizza",
+            "desc": "Olives, feta, tomatoes",
+            "price": 13.99,
+            "img": "https://images.unsplash.com/photo-1604382355076-555eee666fff"
+        },
+        {
+            "id": 16,
+            "name": "Marinara",
+            "desc": "Tomato, garlic, oregano",
+            "price": 8.49,
+            "img": "https://images.unsplash.com/photo-1604382355076-333ccc444ddd"
+        },
+        {
+            "id": 17,
+            "name": "Sicilian",
+            "desc": "Thick crust, tomato, herbs",
+            "price": 12.99,
+            "img": "https://images.unsplash.com/photo-1604382355076-222bbb111aaa"
+        },
+        {
+            "id": 18,
+            "name": " Buffalo Chicken",
+            "desc": "Hot sauce, chicken",
+            "price": 13.49,
+            "img": "https://images.unsplash.com/photo-1604382355076-999iii000jjj"
+        },
+        {
+            "id": 19,
+            "name": "Tuna Pizza",
+            "desc": "Tuna, onions, olives",
+            "price": 12.49,
+            "img": "https://images.unsplash.com/photo-1604382355076-ccc333ddd444"
+        },
+        {
+            "id": 20,
+            "name": "Supreme",
+            "desc": "Peppers, onions, meats",
+            "price": 14.99,
+            "img": "https://images.unsplash.com/photo-1604382355076-aaa111bbb222"
+        }
+    ],
+    "Pasta": [
+        {
+            "id": 21,
+            "name": "Carbonara",
+            "desc": "Creamy sauce, bacon",
+            "price": 10.99,
+            "img": "https://images.unsplash.com/photo-1603133872878-684f208fb84b"
+        },
+        {
+            "id": 22,
+            "name": "Bolognese",
+            "desc": "Tomato meat sauce",
+            "price": 11.49,
+            "img": "https://images.unsplash.com/photo-1586190848861-99aa4a171e90"
+        },
+        {
+            "id": 23,
+            "name": "Pesto Pasta",
+            "desc": "Basil pesto, pine nuts",
+            "price": 10.49,
+            "img": "https://images.unsplash.com/photo-1572441710572-6a1efffae815"
+        },
+        {
+            "id": 24,
+            "name": "Lasagna",
+            "desc": "Layers of pasta & cheese",
+            "price": 12.99,
+            "img": "https://images.unsplash.com/photo-1604908177522-93bbf0bcdf57"
+        },
+        {
+            "id": 25,
+            "name": "Alfredo",
+            "desc": "Creamy alfredo sauce",
+            "price": 11.99,
+            "img": "https://images.unsplash.com/photo-1598514982692-1aa1cfeab8cf"
+        },
+        {
+            "id": 26,
+            "name": "Seafood Linguine",
+            "desc": "Shrimp, mussels",
+            "price": 14.49,
+            "img": "https://images.unsplash.com/photo-1589308078050-d6e72409c93b"
+        },
+        {
+            "id": 27,
+            "name": "Spaghetti Aglio e Olio",
+            "desc": "Garlic, olive oil",
+            "price": 9.99,
+            "img": "https://images.unsplash.com/photo-1586190848861-99aa4a171e90"
+        },
+        {
+            "id": 28,
+            "name": "Ravioli Ricotta",
+            "desc": "Ricotta stuffed",
+            "price": 12.49,
+            "img": "https://images.unsplash.com/photo-1617191512376-ee7d4b45ecb2"
+        },
+        {
+            "id": 29,
+            "name": "Gnocchi Sorrentina",
+            "desc": "Potato gnocchi, tomato",
+            "price": 11.99,
+            "img": "https://images.unsplash.com/photo-1586190848861-99aa4a171e90"
+        },
+        {
+            "id": 30,
+            "name": "Pappardelle Ragu",
+            "desc": "Beef ragu",
+            "price": 13.49,
+            "img": "https://images.unsplash.com/photo-1603133872878-684f208fb84b"
+        },
+        {
+            "id": 31,
+            "name": "Fettuccine Alfredo",
+            "desc": "Creamy parmesan sauce",
+            "price": 12.99,
+            "img": "https://images.unsplash.com/photo-1586190848861-99aa4a171e90"
+        },
+        {
+            "id": 32,
+            "name": "Tortellini",
+            "desc": "Cheese stuffed pasta",
+            "price": 11.49,
+            "img": "https://images.unsplash.com/photo-1589302168068-964664d93dc0"
+        },
+        {
+            "id": 33,
+            "name": "Mac & Cheese",
+            "desc": "Cheesy comfort pasta",
+            "price": 9.49,
+            "img": "https://images.unsplash.com/photo-1568605114967-8130f3a36994"
+        },
+        {
+            "id": 34,
+            "name": "Shrimp Alfredo",
+            "desc": "Shrimp, creamy sauce",
+            "price": 14.99,
+            "img": "https://images.unsplash.com/photo-1585238341965-c0f06d64c9ad"
+        },
+        {
+            "id": 35,
+            "name": "Baked Ziti",
+            "desc": "Tomato sauce, cheese",
+            "price": 12.49,
+            "img": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38"
+        },
+        {
+            "id": 36,
+            "name": "Vegetable Primavera",
+            "desc": "Seasonal veggies",
+            "price": 11.99,
+            "img": "https://images.unsplash.com/photo-1562967916-eb82221dfb27"
+        },
+        {
+            "id": 37,
+            "name": "Cacio e Pepe",
+            "desc": "Cheese & pepper",
+            "price": 10.49,
+            "img": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd"
+        },
+        {
+            "id": 38,
+            "name": "Lasagna Bolognese",
+            "desc": "Classic meat lasagna",
+            "price": 13.99,
+            "img": "https://images.unsplash.com/photo-1589885382892-ec5c5c2d7083"
+        },
+        {
+            "id": 39,
+            "name": "Cheese Ravioli",
+            "desc": "Cheese stuffed",
+            "price": 12.99,
+            "img": "https://images.unsplash.com/photo-1594007654729-407eedc4be65"
+        },
+        {
+            "id": 40,
+            "name": "Pesto Gnocchi",
+            "desc": "Pesto sauce",
+            "price": 11.49,
+            "img": "https://images.unsplash.com/photo-1604917877933-9f7626cefcd4"
+        }
+    ],
+    "Salads": [
+        {
+            "id": 41,
+            "name": "Caesar Salad",
+            "desc": "Romaine, parmesan, croutons",
+            "price": 7.99,
+            "img": "https://images.unsplash.com/photo-1604908177522-e15888ae6b34"
+        },
+        {
+            "id": 42,
+            "name": "Greek Salad",
+            "desc": "Tomatoes, cucumbers, olives",
+            "price": 8.49,
+            "img": "https://images.unsplash.com/photo-1589302168068-964664d93dc0"
+        },
+        {
+            "id": 43,
+            "name": "Caprese Salad",
+            "desc": "Tomatoes, mozzarella, basil",
+            "price": 7.49,
+            "img": "https://images.unsplash.com/photo-1566843971792-2e0f58ed4ce1"
+        },
+        {
+            "id": 44,
+            "name": "Arugula & Pear",
+            "desc": "Arugula, pear, walnuts",
+            "price": 9.49,
+            "img": "https://images.unsplash.com/photo-1568605114967-8130f3a36994"
+        },
+        {
+            "id": 45,
+            "name": "Cobb Salad",
+            "desc": "Chicken, bacon, egg",
+            "price": 10.49,
+            "img": "https://images.unsplash.com/photo-1562967916-eb82221dfb27"
+        },
+        {
+            "id": 46,
+            "name": "Spinach Salad",
+            "desc": "Spinach, berries, nuts",
+            "price": 9.99,
+            "img": "https://images.unsplash.com/photo-1585238341965-c0f06d64c9ad"
+        },
+        {
+            "id": 47,
+            "name": "Pasta Salad",
+            "desc": "Pasta, veggies, vinaigrette",
+            "price": 8.99,
+            "img": "https://images.unsplash.com/photo-1594007654729-407eedc4be65"
+        },
+        {
+            "id": 48,
+            "name": "Beet & Goat Cheese",
+            "desc": "Beets, goat cheese",
+            "price": 9.49,
+            "img": "https://images.unsplash.com/photo-1589885382892-ec5c5c2d7083"
+        },
+        {
+            "id": 49,
+            "name": "Kale Salad",
+            "desc": "Kale, almonds, cranberries",
+            "price": 10.99,
+            "img": "https://images.unsplash.com/photo-1627308595229-7830a5c91f9f"
+        },
+        {
+            "id": 50,
+            "name": "Tuna Nicoise",
+            "desc": "Tuna, eggs, olives",
+            "price": 11.49,
+            "img": "https://images.unsplash.com/photo-1586190848861-99aa4a171e90"
+        }
+    ],
+    "Desserts": [
+        {
+            "id": 51,
+            "name": "Tiramisu",
+            "desc": "Coffee‑flavored Italian dessert",
+            "price": 5.99,
+            "img": "https://images.unsplash.com/photo-1601924582972-76f0bc8538d7"
+        },
+        {
+            "id": 52,
+            "name": "Panna Cotta",
+            "desc": "Creamy custard, berry sauce",
+            "price": 5.49,
+            "img": "https://images.unsplash.com/photo-1578985545062-69928b1d9587"
+        },
+        {
+            "id": 53,
+            "name": "Chocolate Lava Cake",
+            "desc": "Warm chocolate cake",
+            "price": 6.49,
+            "img": "https://images.unsplash.com/photo-1589885382892-ec5c5c2d7083"
+        },
+        {
+            "id": 54,
+            "name": "Gelato",
+            "desc": "Italian ice cream",
+            "price": 4.99,
+            "img": "https://images.unsplash.com/photo-1586190848861-99aa4a171e90"
+        },
+        {
+            "id": 55,
+            "name": "Cannoli",
+            "desc": "Pastry with sweet ricotta",
+            "price": 5.99,
+            "img": "https://images.unsplash.com/photo-1606312619471-4a4b8a6d61a5"
+        },
+        {
+            "id": 56,
+            "name": "Cheesecake",
+            "desc": "Creamy cheesecake slice",
+            "price": 6.99,
+            "img": "https://images.unsplash.com/photo-1594007654729-407eedc4be65"
+        },
+        {
+            "id": 57,
+            "name": "Brownie",
+            "desc": "Chocolate fudge brownie",
+            "price": 4.99,
+            "img": "https://images.unsplash.com/photo-1627308595229-7830a5c91f9f"
+        },
+        {
+            "id": 58,
+            "name": "Fruit Tart",
+            "desc": "Fresh seasonal fruit",
+            "price": 5.99,
+            "img": "https://images.unsplash.com/photo-1585238341965-c0f06d64c9ad"
+        },
+        {
+            "id": 59,
+            "name": "Creme Brulee",
+            "desc": "Caramelized top custard",
+            "price": 6.49,
+            "img": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd"
+        },
+        {
+            "id": 60,
+            "name": "Macarons",
+            "desc": "Assorted flavors",
+            "price": 7.49,
+            "img": "https://images.unsplash.com/photo-1589302168068-964664d93dc0"
+        },
+        {
+            "id": 61,
+            "name": "Apple Pie",
+            "desc": "Warm apple pie",
+            "price": 5.49,
+            "img": "https://images.unsplash.com/photo-1566843971792-2e0f58ed4ce1"
+        },
+        {
+            "id": 62,
+            "name": "Ice Cream Sundae",
+            "desc": "Ice cream with toppings",
+            "price": 5.99,
+            "img": "https://images.unsplash.com/photo-1604382355076-987654321abc"
+        },
+        {
+            "id": 63,
+            "name": "Churros",
+            "desc": "Cinnamon sugar sticks",
+            "price": 4.99,
+            "img": "https://images.unsplash.com/photo-1604382355076-111aaa222bbb"
+        },
+        {
+            "id": 64,
+            "name": "Profiteroles",
+            "desc": "Cream‑filled puffs",
+            "price": 6.99,
+            "img": "https://images.unsplash.com/photo-1604382355076-333ccc444ddd"
+        },
+        {
+            "id": 65,
+            "name": "Banana Split",
+            "desc": "Banana with ice cream",
+            "price": 7.49,
+            "img": "https://images.unsplash.com/photo-1604382355076-555eee666fff"
+        }
+    ],
+    "Appetizers": [
+        {
+            "id": 66,
+            "name": "Bruschetta",
+            "desc": "Tomatoes & basil",
+            "price": 6.49,
+            "img": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38"
+        },
+        {
+            "id": 67,
+            "name": "Garlic Bread",
+            "desc": "Toasted garlic butter",
+            "price": 4.99,
+            "img": "https://images.unsplash.com/photo-1585238341965-c0f06d64c9ad"
+        },
+        {
+            "id": 68,
+            "name": "Mozzarella Sticks",
+            "desc": "Fried cheese",
+            "price": 7.99,
+            "img": "https://images.unsplash.com/photo-1594007654729-407eedc4be65"
+        },
+        {
+            "id": 69,
+            "name": "Stuffed Mushrooms",
+            "desc": "Cheese & herbs",
+            "price": 8.49,
+            "img": "https://images.unsplash.com/photo-1589885382892-ec5c5c2d7083"
+        },
+        {
+            "id": 70,
+            "name": "Chicken Wings",
+            "desc": "Spicy wings",
+            "price": 9.49,
+            "img": "https://images.unsplash.com/photo-1604382355076-abcdef123456"
+        },
+        {
+            "id": 71,
+            "name": "Calamari",
+            "desc": "Fried squid",
+            "price": 10.49,
+            "img": "https://images.unsplash.com/photo-1604382355076-222bbb111aaa"
+        },
+        {
+            "id": 72,
+            "name": "Onion Rings",
+            "desc": "Crispy rings",
+            "price": 6.99,
+            "img": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd"
+        },
+        {
+            "id": 73,
+            "name": "Caprese Skewers",
+            "desc": "Mozzarella & tomatoes",
+            "price": 7.99,
+            "img": "https://images.unsplash.com/photo-1589302168068-964664d93dc0"
+        },
+        {
+            "id": 74,
+            "name": "Potato Skins",
+            "desc": "Loaded with cheese",
+            "price": 8.99,
+            "img": "https://images.unsplash.com/photo-1604918177227-7fa3f14a9e90"
+        },
+        {
+            "id": 75,
+            "name": "Shrimp Cocktail",
+            "desc": "Chilled shrimp",
+            "price": 11.49,
+            "img": "https://images.unsplash.com/photo-1589308078050-d6e72409c93b"
+        }
+    ],
+    "Sides": [
+        {
+            "id": 76,
+            "name": "French Fries",
+            "desc": "Crispy salted fries",
+            "price": 3.99,
+            "img": "https://images.unsplash.com/photo-1586190848861-99aa4a171e90"
+        },
+        {
+            "id": 77,
+            "name": "Mashed Potatoes",
+            "desc": "Creamy potatoes",
+            "price": 4.49,
+            "img": "https://images.unsplash.com/photo-1594007654729-407eedc4be65"
+        },
+        {
+            "id": 78,
+            "name": "Steamed Veggies",
+            "desc": "Seasonal vegetables",
+            "price": 4.99,
+            "img": "https://images.unsplash.com/photo-1562967916-eb82221dfb27"
+        },
+        {
+            "id": 79,
+            "name": "Coleslaw",
+            "desc": "Cabbage & carrots",
+            "price": 3.49,
+            "img": "https://images.unsplash.com/photo-1585238341965-c0f06d64c9ad"
+        },
+        {
+            "id": 80,
+            "name": "Garlic Mashed",
+            "desc": "Garlic infused mash",
+            "price": 4.99,
+            "img": "https://images.unsplash.com/photo-1589885382892-ec5c5c2d7083"
+        },
+        {
+            "id": 81,
+            "name": "Onion Rings",
+            "desc": "Crispy rings",
+            "price": 4.49,
+            "img": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd"
+        },
+        {
+            "id": 82,
+            "name": "Corn on the Cob",
+            "desc": "Grilled corn",
+            "price": 3.99,
+            "img": "https://images.unsplash.com/photo-1604382355076-987654321abc"
+        },
+        {
+            "id": 83,
+            "name": "Breadsticks",
+            "desc": "Served with marinara",
+            "price": 3.99,
+            "img": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38"
+        },
+        {
+            "id": 84,
+            "name": "Cheesy Potatoes",
+            "desc": "Potatoes & cheese",
+            "price": 5.49,
+            "img": "https://images.unsplash.com/photo-1604382355076-333ccc444ddd"
+        },
+        {
+            "id": 85,
+            "name": "Sweet Potato Fries",
+            "desc": "Crispy & sweet",
+            "price": 4.99,
+            "img": "https://images.unsplash.com/photo-1585238341965-c0f06d64c9ad"
+        }
+    ],
+    "Drinks": [
+        {
+            "id": 86,
+            "name": "Coca-Cola",
+            "desc": "330ml can",
+            "price": 2.49,
+            "img": "https://images.unsplash.com/photo-1585238341965-c0f06d64c9ad"
+        },
+        {
+            "id": 87,
+            "name": "Mineral Water",
+            "desc": "Still or sparkling",
+            "price": 1.99,
+            "img": "https://images.unsplash.com/photo-1585061257115-43b1c2d42a0f"
+        },
+        {
+            "id": 88,
+            "name": "Orange Juice",
+            "desc": "Freshly squeezed",
+            "price": 3.49,
+            "img": "https://images.unsplash.com/photo-1571091718767-18f9f144cb1e"
+        },
+        {
+            "id": 89,
+            "name": "Lemonade",
+            "desc": "Fresh lemonade",
+            "price": 3.99,
+            "img": "https://images.unsplash.com/photo-1585238341965-c0f06d64c9ad"
+        },
+        {
+            "id": 90,
+            "name": "Iced Tea",
+            "desc": "Sweetened iced tea",
+            "price": 3.49,
+            "img": "https://images.unsplash.com/photo-1585061257115-43b1c2d42a0f"
+        },
+        {
+            "id": 91,
+            "name": "Espresso",
+            "desc": "Strong coffee",
+            "price": 2.99,
+            "img": "https://images.unsplash.com/photo-1586190848861-99aa4a171e90"
+        },
+        {
+            "id": 92,
+            "name": "Latte",
+            "desc": "Milk & espresso",
+            "price": 3.99,
+            "img": "https://images.unsplash.com/photo-1594007654729-407eedc4be65"
+        },
+        {
+            "id": 93,
+            "name": "Beer",
+            "desc": "330ml bottle",
+            "price": 4.49,
+            "img": "https://images.unsplash.com/photo-1601924582971-3b1774a8f52d"
+        },
+        {
+            "id": 94,
+            "name": "Red Wine",
+            "desc": "Glass of red",
+            "price": 5.99,
+            "img": "https://images.unsplash.com/photo-1589885382892-ec5c5c2d7083"
+        },
+        {
+            "id": 95,
+            "name": "White Wine",
+            "desc": "Glass of white",
+            "price": 5.99,
+            "img": "https://images.unsplash.com/photo-1589302168068-964664d93dc0"
+        },
+        {
+            "id": 96,
+            "name": "Mojito",
+            "desc": "Mint & lime",
+            "price": 6.49,
+            "img": "https://images.unsplash.com/photo-1604382355076-987654321abc"
+        },
+        {
+            "id": 97,
+            "name": "Smoothie",
+            "desc": "Fresh fruit blend",
+            "price": 5.49,
+            "img": "https://images.unsplash.com/photo-1562967916-eb82221dfb27"
+        },
+        {
+            "id": 98,
+            "name": "Milkshake",
+            "desc": "Vanilla or chocolate",
+            "price": 4.99,
+            "img": "https://images.unsplash.com/photo-1585238341965-c0f06d64c9ad"
+        },
+        {
+            "id": 99,
+            "name": "Iced Coffee",
+            "desc": "Cold brewed coffee",
+            "price": 3.99,
+            "img": "https://images.unsplash.com/photo-1586190848861-99aa4a171e90"
+        },
+        {
+            "id": 100,
+            "name": "Green Tea",
+            "desc": "Hot green tea",
+            "price": 2.49,
+            "img": "https://images.unsplash.com/photo-1594007654729-407eedc4be65"
+        }
+    ]
+}
