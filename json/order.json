@@ -1,0 +1,21 @@
+[
+    {
+        "Table": 2,
+        "Time": "17:42",
+        "Items": [
+            { "name": "Margherita", "times": "1", "price": "8.99" },
+            { "name": "Pepperoni", "times": "2", "price": "21.98" }
+        ],
+        "Total": "30.97",
+        "status": "pending"
+    },
+    {
+        "Table": 9,
+        "Time": "18:00",
+        "Items": [
+            { "name": "Burger", "times": "2", "price": "23.98" }
+        ],
+        "Total": "23.98",
+        "status": "pending"
+    }
+]

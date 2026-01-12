@@ -4,9 +4,68 @@ const preparingTab = document.querySelector(".tab.preparing");
 const readyTab = document.querySelector(".tab.ready");
 const deliveredTab = document.querySelector(".tab.delivered");
 const clearAllBtn = document.querySelector(".btn-clear");
+const loginOverlay = document.getElementById("loginOverlay");
+const loginForm = document.getElementById("loginForm");
+const passwordInput = document.getElementById("passwordInput");
+const togglePassword = document.getElementById("togglePassword");
 
 // nastaví tab all ako aktívny po načítaní stránky
 allTAb.classList.add("active");
+
+
+fetch("../json/order.json") 
+    .then(res => res.json())
+    .then(orders => {
+        const ordersContainer = document.querySelector(".orders");
+
+        orders.forEach(order => {
+            const itemsHTML = order.Items.map(item => `
+                <div class="item">
+                    <span>${item.times}x ${item.name}</span>
+                    <span>€${item.price}</span>
+                </div>
+            `).join("");
+
+            const orderHTML = `
+                <div class="order-card" data-status="pending">
+                    <div class="order-header">
+                        <div>
+                            <strong>Table ${order.Table}</strong>
+                            <div class="time">
+                                ${order.Time}
+                            </div>
+                        </div>
+                        <span class="status pending">
+                            ⏰ Pending
+                        </span>
+                    </div>
+
+                    <div class="order-items">
+                        <p><strong>Order Items:</strong></p>
+                        ${itemsHTML}
+                    </div>
+
+                    <hr>
+
+                    <div class="order-total">
+                        <span>Total</span>
+                        <strong>€${order.Total}</strong>
+                    </div>
+
+                    <button class="btn-primary" data-status="pending">
+                        📦 Start Preparing
+                    </button>
+                    <button class="btn-delete">🗑 Delete Order</button>
+                </div>
+            `;
+
+            ordersContainer.insertAdjacentHTML("beforeend", orderHTML);
+        });
+        updateTabCounters();
+
+    })
+    .catch(err => console.log("Fetch error:", err));
+
 
 // funkcia počíta objednávky podľa statusu a aktualizuje text tabov
 function updateTabCounters() {
@@ -178,3 +237,20 @@ clearAllBtn.addEventListener("click", () => {
         statusFilter({ currentTarget: document.querySelector(".tab.all") });
     });
 });
+
+
+// login popup okno
+loginForm.addEventListener("submit", (e) => {
+    e.preventDefault(); // preventnutie pred refreshom pri odoslaní loginu
+
+    loginOverlay.style.display = "none"; // skrytie okna
+});
+
+// toggle na heslo
+togglePassword.addEventListener("click", () => {
+    const isPassword = passwordInput.type === "password"; // zistuje či je heslo viditelné
+
+    passwordInput.type = isPassword ? "text" : "password"; // mení viditelnosť 
+    togglePassword.textContent = isPassword ? "hide" : "show"; // meni text tlačidla na zobrazenie hesla
+});
+

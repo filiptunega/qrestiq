@@ -13,6 +13,27 @@
 </head>
 <body>
 
+<div class="login-overlay" id="loginOverlay">
+    <div class="login-box">
+        <h2>Staff Login</h2>
+        <p>Please log in to continue</p>
+
+        <form id="loginForm">
+            <input type="email" placeholder="Email" required>
+            
+            <div class="password-wrapper">
+                <input type="password" id="passwordInput" placeholder="Password" required>
+                <button type="button" class="toggle-password" id="togglePassword">
+                    show
+                </button>
+            </div>
+
+            <button type="submit" class="btn-login">Login</button>
+        </form>
+    </div>
+</div>
+
+
 <div class="top-bar">
     <div class="top-bar-inner">
 
@@ -44,131 +65,6 @@
 <main class="container">
     <div class="content">
         <div class="orders">
-
-            <div class="order-card" data-status="pending">
-                <div class="order-header">
-                    <div>
-                        <strong>Table 1</strong>
-                        <div class="time">18:46</div>
-                    </div>
-                    <span class="status pending">⏰ Pending</span>
-                </div>
-
-                <div class="order-items">
-                    <p><strong>Order Items:</strong></p>
-                    <div class="item">
-                        <span>1x Margherita</span>
-                        <span>€8.99</span>
-                    </div>
-                </div>
-
-                <hr>
-
-                <div class="order-total">
-                    <span>Total</span>
-                    <strong>€8.99</strong>
-                </div>
-
-                <button class="btn-primary" data-status="pending">📦 Start Preparing</button>
-                <button class="btn-delete">🗑 Delete Order</button>
-            </div>
-
-            <div class="order-card" data-status="preparing">
-                <div class="order-header">
-                    <div>
-                        <strong>Table 2</strong>
-                        <div class="time">09:29 PM</div>
-                    </div>
-                    <span class="status preparing">📦 Preparing</span>
-                </div>
-
-                <div class="order-items">
-                    <p><strong>Order Items:</strong></p>
-                    <div class="item">
-                        <span>1x Margherita</span>
-                        <span>€8.99</span>
-                    </div>
-                    <div class="item">
-                        <span>2x Pepperoni</span>
-                        <span>€21.98</span>
-                    </div>
-                    <div class="item">
-                        <span>1x Burger</span>
-                        <span>€11.99</span>
-                    </div>
-                </div>
-
-                <hr>
-
-                <div class="order-total">
-                    <span>Total</span>
-                    <strong>€42.96</strong>
-                </div>
-
-                <button class="btn-primary" data-status="preparing">✅ Mark as ready</button>
-                <button class="btn-delete">🗑 Delete Order</button>
-            </div>
-
-            <div class="order-card" data-status="ready">
-                <div class="order-header">
-                    <div>
-                        <strong>Table 1</strong>
-                        <div class="time">18:46</div>
-                    </div>
-                    <span class="status ready">✅ Ready</span>
-                </div>
-
-                <div class="order-items">
-                    <p><strong>Order Items:</strong></p>
-                    <div class="item">
-                        <span>1x Margherita</span>
-                        <span>€8.99</span>
-                    </div>
-                </div>
-
-                <hr>
-
-                <div class="order-total">
-                    <span>Total</span>
-                    <strong>€8.99</strong>
-                </div>
-
-                <button class="btn-primary" data-status="ready">🚚 Mark as delivered</button>
-                <button class="btn-delete">🗑 Delete Order</button>
-            </div>
-
-            <div class="order-card" data-status="delivered">
-                <div class="order-header">
-                    <div>
-                        <strong>Table 2</strong>
-                        <div class="time">09:29 PM</div>
-                    </div>
-                    <span class="status delivered">🚚 Delivered</span>
-                </div>
-
-                <div class="order-items">
-                    <p><strong>Order Items:</strong></p>
-                    <div class="item">
-                        <span>1x Margherita</span>
-                        <span>€8.99</span>
-                    </div>
-                    <div class="item">
-                        <span>2x Pepperoni</span>
-                        <span>€21.98</span>
-                    </div>
-                </div>
-
-                <hr>
-
-                <div class="order-total">
-                    <span>Total</span>
-                    <strong>€42.96</strong>
-                </div>
-
-                <button class="btn-delete">🗑 Delete Order</button>
-            </div>
-
-
 
         </div>
         

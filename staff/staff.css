@@ -320,3 +320,87 @@ body {
     color: #ffffff;
 }
 
+.login-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(24, 24, 24, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+}
+
+.login-box {
+    background-color: white;
+    padding: 40px;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 450px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.login-box h2 {
+    margin-bottom: 8px;
+}
+
+.login-box p {
+    font-size: 14px;
+    color: var(--secondary);
+    margin-bottom: 24px;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+}
+
+.btn-login {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background-color: var(--primary);
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.password-wrapper {
+    position: relative;
+}
+
+.password-wrapper input {
+    width: 100%;
+    padding: 12px;
+    padding-right: 72px;
+    height: 44px;
+    line-height: 44px;
+}
+
+.toggle-password {
+    position: absolute;
+    top: 0;
+    right: 12px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    color: var(--primary);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.toggle-password:hover {
+    text-decoration: underline;
+}
+
+
+
+
