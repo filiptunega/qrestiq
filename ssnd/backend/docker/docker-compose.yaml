@@ -1,7 +1,7 @@
 services:
   reverse-proxy:
     image: nginx:latest
-    container_name: ssnd-reverse-proxy
+    container_name: reverse-proxy
     ports:
       - "80:80"
     volumes:
@@ -12,9 +12,9 @@ services:
       ssnd-network:
         ipv4_address: 172.18.0.2
 
-  qrestiq:
+  frontend:
     image: nginx:latest
-    container_name: ssnd-qrestiq
+    container_name: frontend
     volumes:
       - ../qrestiq/nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - ../qrestiq/src:/usr/share/nginx/html
@@ -27,7 +27,7 @@ services:
       context: ../backend
       dockerfile: ./Dockerfile
     image: ssnd-backend:dev
-    container_name: ssnd-backend
+    container_name: backend
     env_file:
       - .env
     environment:
@@ -42,7 +42,7 @@ services:
 
   ssnd-db:
     image: postgres:15
-    container_name: ssnd-db
+    container_name: db
     env_file:
       - .env
     ports:
@@ -55,7 +55,7 @@ services:
 
   ssnd-pgadmin:
     image: dpage/pgadmin4
-    container_name: ssnd-pgadmin
+    container_name: pgadmin
     env_file:
       - .env
     volumes:
