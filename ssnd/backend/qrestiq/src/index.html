@@ -4,19 +4,20 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-    <title>Qrestiq – Premium Mobile Menu</title>
+    <title>Qrestiq – Premium Menu</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="assets/customer/customer.css" />
 </head>
 
 <body>
+    <div id="toastContainer" class="toast-container"></div>
 
     <header class="main-header">
         <div class="top">
             <div class="brand">
-                <img src="/assets/img/logo.png" alt="Qrestiq Logo" class="brand-logo" />
+                <img src="/assets/img/logo.png" alt="Qrestiq Logo" class="brand-logo"
+                    onerror="this.style.display='none'" />
                 <span>Qrestiq</span>
             </div>
         </div>
@@ -30,15 +31,18 @@
 
     <button class="floating-cart" id="openCart" aria-label="Open Cart">
         <div class="cart-icon-wrapper">
-            <img src="assets/img/wCart.png" alt="Cart" />
+            <img src="assets/img/wCart.png" alt="Cart"
+                onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxjaXJjbGUgY3g9IjkiIGN5PSIyMSIgcj0iMSI+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMSIgcj0iMSI+PC9jaXJjbGU+PHBhdGggZD0iTTEgMWg0bDIuNjggMTMuMzlhMiAyIDAgMCAwIDIgMS42MWg5LjcyYTIgMiAwIDAgMCAyLTEuNjFMMjMgNkg2Ij48L3BhdGg+PC9zdmc+'" />
             <span id="cartCount" class="cart-badge">0</span>
         </div>
     </button>
 
+    <div class="cart-overlay" id="cartOverlay"></div>
+
     <div class="cart" id="cart">
         <header class="cart-header">
             <strong>Your Order</strong>
-            <button class="close-cart" onclick="toggleCart(false)" aria-label="Close Cart">✕</button>
+            <button class="close-cart" id="closeCartBtn" aria-label="Close Cart">✕</button>
         </header>
 
         <main class="cart-main">
@@ -49,7 +53,7 @@
                 <div class="error" id="cartTableError">Table not available</div>
             </div>
 
-            <div id="cartItems"></div>
+            <div id="cartItems" class="cart-items-wrapper"></div>
 
             <div class="note-container">
                 <label for="note">Order Note</label>
