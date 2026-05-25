@@ -15,8 +15,35 @@ const ordersContainer = document.querySelector('.orders');
 // aktívny tab
 allTab.classList.add('active');
 
+// ===== TOKEN =====
+function getToken() {
+    return sessionStorage.getItem('token');
+}
+
+function saveToken(token) {
+    sessionStorage.setItem('token', token);
+}
+
+function clearToken() {
+    sessionStorage.removeItem('token');
+}
+
+function authHeaders() {
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getToken()}`,
+    };
+}
+
+function logout() {
+    clearToken();
+    loginOverlay.style.display = 'flex';
+    stopPolling();
+    ordersContainer.innerHTML = '';
+}
+
+
 // ===== POLLING =====
-// Každých 10 sekúnd znovu načíta objednávky zo servera
 let pollingInterval = null;
 
 function startPolling() {
@@ -31,7 +58,10 @@ function stopPolling() {
 
 // ===== NAČÍTANIE OBJEDNÁVOK Z API =====
 async function loadOrders() {
-    const res = await fetch(`${API}/orders`);
+    const res = await fetch(`${API}/orders`, {
+        headers: authHeaders(),
+    });
+    if (res.status === 401) { logout(); return []; }
     if (!res.ok) throw new Error('Nepodarilo sa načítať objednávky');
     return await res.json();
 }
@@ -48,16 +78,13 @@ async function loadAndRender() {
 
 // ===== RENDER =====
 function renderOrders(orders) {
-    // Zapamätáme si aktívny tab pred re-renderom
     const activeStatus = document.querySelector('.tab.active')?.dataset.status ?? 'all';
 
     ordersContainer.innerHTML = '';
 
-    // Backend status "completed" mapujeme na "delivered" pre zobrazenie
     orders.forEach(order => {
         const displayStatus = order.status === 'completed' ? 'delivered' : order.status;
 
-        // Preskočíme cancelled objednávky (nezobrazujeme ich)
         if (order.status === 'cancelled') return;
 
         const itemsHTML = order.items.map(item => `
@@ -74,7 +101,6 @@ function renderOrders(orders) {
             delivered: '🚚 Delivered',
         }[displayStatus] ?? displayStatus;
 
-        // Tlačidlo pre posun statusu
         let actionBtn = '';
         if (displayStatus === 'pending') {
             actionBtn = `<button class="btn-primary" data-status="pending" data-id="${order.id}">📦 Start Preparing</button>`;
@@ -125,7 +151,6 @@ function renderOrders(orders) {
 
     updateTabCounters();
 
-    // Obnoví filter podľa predtým aktívneho tabu
     const activeTabEl = document.querySelector(`.tab[data-status="${activeStatus}"]`);
     if (activeTabEl) statusFilter({ currentTarget: activeTabEl });
 }
@@ -191,7 +216,6 @@ document.querySelectorAll('.tab').forEach(tab => {
 
 
 // ===== ZMENA STATUSU + DELETE =====
-// Mapa: aktuálny displayStatus → backend status
 const nextStatusMap = {
     pending: 'preparing',
     preparing: 'ready',
@@ -201,7 +225,6 @@ const nextStatusMap = {
 document.addEventListener('click', async (e) => {
     const btn = e.target;
 
-    // Posun statusu objednávky
     if (btn.classList.contains('btn-primary')) {
         const id = btn.dataset.id;
         const curStatus = btn.dataset.status;
@@ -213,9 +236,10 @@ document.addEventListener('click', async (e) => {
         try {
             const res = await fetch(`${API}/orders/${id}/status`, {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
+                headers: authHeaders(),
                 body: JSON.stringify({ status: backendNext }),
             });
+            if (res.status === 401) { logout(); return; }
             if (!res.ok) throw new Error('Status update failed');
             await loadAndRender();
         } catch (err) {
@@ -224,7 +248,6 @@ document.addEventListener('click', async (e) => {
         }
     }
 
-    // Vymazanie objednávky (nastaví status na cancelled)
     if (btn.classList.contains('btn-delete')) {
         const id = btn.dataset.id;
         if (!id) return;
@@ -234,9 +257,10 @@ document.addEventListener('click', async (e) => {
         try {
             const res = await fetch(`${API}/orders/${id}/status`, {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
+                headers: authHeaders(),
                 body: JSON.stringify({ status: 'cancelled' }),
             });
+            if (res.status === 401) { logout(); return; }
             if (!res.ok) throw new Error('Delete failed');
             await loadAndRender();
         } catch (err) {
@@ -267,14 +291,13 @@ clearAllBtn.addEventListener('click', () => {
     popUp.querySelector('.popUp-yes').addEventListener('click', async () => {
         popUp.remove();
 
-        // Zrušíme všetky viditeľné objednávky (nie delivered)
         const cards = document.querySelectorAll('.order-card:not([data-status="delivered"])');
         const ids = [...cards].map(c => c.dataset.id).filter(Boolean);
 
         await Promise.allSettled(ids.map(id =>
             fetch(`${API}/orders/${id}/status`, {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
+                headers: authHeaders(),
                 body: JSON.stringify({ status: 'cancelled' }),
             })
         ));
@@ -290,24 +313,21 @@ loginForm.addEventListener('submit', async (e) => {
 
     const email = loginForm.querySelector('input[type="email"]').value.trim();
     const password = passwordInput.value;
+    const submitBtn = loginForm.querySelector('.btn-login');
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Logging in...';
 
     try {
-        const res = await fetch(`${API}/users/login`, {
+        const res = await fetch(`${API}/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password }),
         });
 
         if (res.ok) {
-            loginOverlay.style.display = 'none';
-            loadAndRender();
-            startPolling();
-            return;
-        }
-
-        // 404 = endpoint ešte neexistuje → dev fallback
-        if (res.status === 404) {
-            console.warn('Login API nedostupné, používam dev fallback.');
+            const data = await res.json();
+            saveToken(data.token);
             loginOverlay.style.display = 'none';
             loadAndRender();
             startPolling();
@@ -317,10 +337,10 @@ loginForm.addEventListener('submit', async (e) => {
         const err = await res.json().catch(() => ({}));
         alert(err.message ?? 'Nesprávne prihlasovacie údaje.');
     } catch {
-        console.warn('Login API nedostupné, používam dev fallback.');
-        loginOverlay.style.display = 'none';
-        loadAndRender();
-        startPolling();
+        alert('Server nie je dostupný.');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Login';
     }
 });
 
@@ -329,3 +349,11 @@ togglePassword.addEventListener('click', () => {
     passwordInput.type = isPassword ? 'text' : 'password';
     togglePassword.textContent = isPassword ? 'hide' : 'show';
 });
+
+
+// ===== AUTO-LOGIN ak má token =====
+if (getToken()) {
+    loginOverlay.style.display = 'none';
+    loadAndRender();
+    startPolling();
+}
