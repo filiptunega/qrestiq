@@ -34,7 +34,6 @@ body {
     padding: 24px;
 }
 
-
 .header {
     display: flex;
     justify-content: space-between;
@@ -76,6 +75,14 @@ body {
     display: flex;
     gap: 10px;
     margin-bottom: 24px;
+    /* Plynulý scroll pre mobily */
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.tabs::-webkit-scrollbar {
+    display: none;
 }
 
 .tab {
@@ -85,6 +92,8 @@ body {
     cursor: pointer;
     border: none;
     font-weight: 500;
+    white-space: nowrap;
+    /* Zabraňuje zalomeniu textu */
 }
 
 .tab.all {
@@ -116,7 +125,6 @@ body {
     background-color: var(--primary);
     color: var(--white);
 }
-
 
 .content {
     background-color: var(--white);
@@ -160,26 +168,29 @@ body {
 }
 
 .order-card {
-    width: 350px;
+    /* Upravené pre lepšie škálovanie */
+    width: 100%;
+    max-width: 350px;
     background-color: var(--white);
     border-radius: 14px;
     padding: 16px;
+    flex-grow: 1;
 }
 
-.order-card[data-status="pending"]{
+.order-card[data-status="pending"] {
     background-color: #fef9c3;
     border: 2px solid #fde047;
 }
 
-.order-card[data-status="preparing"]{
+.order-card[data-status="preparing"] {
     border: 2px solid #7ea9ff;
 }
 
-.order-card[data-status="ready"]{
+.order-card[data-status="ready"] {
     border: 2px solid #0fd126;
 }
 
-.order-card[data-status="delivered"]{
+.order-card[data-status="delivered"] {
     background-color: #eaeaea;
     border: 2px solid #3e4147;
 }
@@ -205,16 +216,16 @@ body {
     color: #92400e;
 }
 
-.status.preparing{
+.status.preparing {
     color: #1462ff;
 }
 
-.status.ready{
-    color:#0db921;
+.status.ready {
+    color: #0db921;
 }
 
-.status.delivered{
-    color: #3d3e40
+.status.delivered {
+    color: #3d3e40;
 }
 
 .order-items {
@@ -244,15 +255,15 @@ body {
     cursor: pointer;
 }
 
-.btn-primary[data-status="pending"]{
+.btn-primary[data-status="pending"] {
     background-color: #2563eb;
 }
 
-.btn-primary[data-status="preparing"]{
+.btn-primary[data-status="preparing"] {
     background-color: #0db921;
 }
 
-.btn-primary[data-status="ready"]{
+.btn-primary[data-status="ready"] {
     background-color: var(--primary);
 }
 
@@ -266,7 +277,7 @@ body {
     cursor: pointer;
 }
 
-
+/* PopUp a Login zostávajú nezmenené */
 .popUp-overlay {
     position: fixed;
     top: 0;
@@ -287,7 +298,7 @@ body {
     text-align: center;
     max-width: 400px;
     width: 90%;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 .popUp p {
@@ -337,7 +348,7 @@ body {
     width: 100%;
     max-width: 450px;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
 .login-box h2 {
@@ -402,5 +413,34 @@ body {
 }
 
 
+/* ===== RESPONSIVE DIZAJN PRE MOBILY ===== */
+@media (max-width: 768px) {
 
+    .container,
+    .top-bar-inner {
+        padding: 16px;
+    }
 
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .header-right {
+        width: 100%;
+    }
+
+    .btn-clear {
+        width: 100%;
+    }
+
+    .content {
+        padding: 32px 16px;
+    }
+
+    .order-card {
+        max-width: 100%;
+        /* Na mobile zaberie plnú šírku */
+    }
+}

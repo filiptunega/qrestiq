@@ -12,20 +12,21 @@ const passwordInput = document.getElementById('passwordInput');
 const togglePassword = document.getElementById('togglePassword');
 const ordersContainer = document.querySelector('.orders');
 
-// aktívny tab
-allTab.classList.add('active');
+// Obnovenie posledného aktívneho tabu z pamäte (alebo 'all')
+const savedTab = localStorage.getItem('activeTab') || 'all';
+document.querySelector(`.tab[data-status="${savedTab}"]`)?.classList.add('active');
 
-// ===== TOKEN =====
+// ===== TOKEN (Zmena na localStorage pre trvalé prihlásenie) =====
 function getToken() {
-    return sessionStorage.getItem('token');
+    return localStorage.getItem('token');
 }
 
 function saveToken(token) {
-    sessionStorage.setItem('token', token);
+    localStorage.setItem('token', token);
 }
 
 function clearToken() {
-    sessionStorage.removeItem('token');
+    localStorage.removeItem('token');
 }
 
 function authHeaders() {
@@ -56,7 +57,7 @@ function stopPolling() {
 }
 
 
-// ===== NAČÍTANIE OBJEDNÁVOK Z API =====
+// ===== NAČÍTANIE OBJEDNÁVOK Z API + CACHING =====
 async function loadOrders() {
     const res = await fetch(`${API}/orders`, {
         headers: authHeaders(),
@@ -67,8 +68,17 @@ async function loadOrders() {
 }
 
 async function loadAndRender() {
+    // 1. Najprv vykreslíme cacheované dáta z pamäte pre okamžité zobrazenie
+    const cachedOrders = localStorage.getItem('ordersCache');
+    if (cachedOrders && document.querySelectorAll('.order-card').length === 0) {
+        renderOrders(JSON.parse(cachedOrders));
+    }
+
+    // 2. Následne stiahneme najnovšie dáta z API
     try {
         const orders = await loadOrders();
+        // Uložíme ich do pamäte pre nabudúce
+        localStorage.setItem('ordersCache', JSON.stringify(orders));
         renderOrders(orders);
     } catch (err) {
         console.error(err);
@@ -78,7 +88,8 @@ async function loadAndRender() {
 
 // ===== RENDER =====
 function renderOrders(orders) {
-    const activeStatus = document.querySelector('.tab.active')?.dataset.status ?? 'all';
+    // Zistíme aktuálny tab (z UI, pamäte alebo 'all')
+    const activeStatus = document.querySelector('.tab.active')?.dataset.status ?? savedTab;
 
     ordersContainer.innerHTML = '';
 
@@ -151,8 +162,11 @@ function renderOrders(orders) {
 
     updateTabCounters();
 
+    // Aplikujeme filter na základe aktuálneho stavu
     const activeTabEl = document.querySelector(`.tab[data-status="${activeStatus}"]`);
-    if (activeTabEl) statusFilter({ currentTarget: activeTabEl });
+    if (activeTabEl) {
+        statusFilter({ currentTarget: activeTabEl });
+    }
 }
 
 
@@ -179,6 +193,9 @@ function statusFilter(click) {
 
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     tabButton.classList.add('active');
+
+    // Uloženie výberu tabu do pamäte
+    localStorage.setItem('activeTab', tabButton.dataset.status);
 
     const existingEmpty = document.querySelector('.empty-state');
     if (existingEmpty) existingEmpty.remove();
