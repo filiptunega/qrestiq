@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <title>Qrestiq – Premium Mobile Menu</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="assets/customer/customer.css" />
+</head>
+
+<body>
+
+    <header class="main-header">
+        <div class="top">
+            <div class="brand">
+                <img src="/assets/img/logo.png" alt="Qrestiq Logo" class="brand-logo" />
+                <span>Qrestiq</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="chips-container">
+        <div class="chips" id="categories"></div>
+    </div>
+
+    <main id="menu" class="menu-container"></main>
+
+    <button class="floating-cart" id="openCart" aria-label="Open Cart">
+        <div class="cart-icon-wrapper">
+            <img src="assets/img/wCart.png" alt="Cart" />
+            <span id="cartCount" class="cart-badge">0</span>
+        </div>
+    </button>
+
+    <div class="cart" id="cart">
+        <header class="cart-header">
+            <strong>Your Order</strong>
+            <button class="close-cart" onclick="toggleCart(false)" aria-label="Close Cart">✕</button>
+        </header>
+
+        <main class="cart-main">
+            <div class="table-input-container">
+                <label for="cartTableInput">Table Selection</label>
+                <input id="cartTableInput" type="number" pattern="[0-9]*" inputmode="numeric"
+                    placeholder="Enter table number" autocomplete="off" />
+                <div class="error" id="cartTableError">Table not available</div>
+            </div>
+
+            <div id="cartItems"></div>
+
+            <div class="note-container">
+                <label for="note">Order Note</label>
+                <textarea id="note" placeholder="Any special requests? (e.g., no onions)"></textarea>
+            </div>
+        </main>
+
+        <footer class="cart-footer">
+            <button class="submit" id="submitBtn">
+                Submit Order – €0.00
+            </button>
+        </footer>
+    </div>
+
+    <script src="assets/customer/customer.js"></script>
+</body>
+
+</html>
