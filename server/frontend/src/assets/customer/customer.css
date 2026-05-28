@@ -1,4 +1,4 @@
-/* ===== GLOBÁLNE PREMENNÉ ===== */
+/* ===== GLOBÁLNE PREMENNÉ A PRUŽNÉ EASINGY ===== */
 :root {
     --bg: #faf6f2;
     --card: #ffffff;
@@ -10,6 +10,9 @@
     --border: rgba(123, 138, 152, 0.18);
     --success: #28a745;
     --danger: #ff4d4d;
+
+    --spring-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --smooth-ease: cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 * {
@@ -89,21 +92,23 @@ body.no-scroll {
     white-space: nowrap;
     cursor: pointer;
     color: var(--primary);
-    transition: all 0.3s ease;
+    transition: background 0.3s var(--smooth-ease), color 0.3s var(--smooth-ease), transform 0.2s var(--spring-ease), box-shadow 0.3s var(--smooth-ease);
     user-select: none;
 }
 
 .chip:hover {
     background: #e2dcd5;
+    transform: translateY(-1px);
 }
 
 .chip.active {
     background: var(--chip-active);
     color: #fff;
-    box-shadow: 0 4px 10px rgba(11, 41, 64, 0.15);
+    box-shadow: 0 6px 14px rgba(11, 41, 64, 0.2);
+    transform: scale(1.04);
 }
 
-/* ===== HLAVNÝ OBSAH (MENU) ===== */
+/* ===== HLAVNÝ OBSAH ===== */
 .menu-container {
     padding: 20px 16px;
     max-width: 1200px;
@@ -112,7 +117,6 @@ body.no-scroll {
 
 .category-section {
     margin-bottom: 36px;
-    /* Nutné kvôli Scroll Spy a offsetu */
     scroll-margin-top: 130px;
 }
 
@@ -129,32 +133,43 @@ body.no-scroll {
     gap: 16px;
 }
 
-/* ===== POLOŽKA MENU ===== */
+/* POLOŽKA MENU */
 .item {
     background: var(--card);
     border-radius: 16px;
     padding: 14px;
     display: flex;
     gap: 16px;
-    box-shadow: 0 4px 12px rgba(11, 41, 64, 0.03);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 12px rgba(11, 41, 64, 0.02);
     border: 1px solid transparent;
+    transition: transform 0.4s var(--spring-ease), box-shadow 0.4s var(--smooth-ease), border-color 0.3s ease;
+    will-change: transform, box-shadow;
 }
 
 .item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(11, 41, 64, 0.08);
-    border-color: rgba(11, 41, 64, 0.05);
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 12px 24px rgba(11, 41, 64, 0.08);
+    border-color: rgba(11, 41, 64, 0.06);
 }
 
-.item-img {
+.item-img-wrapper {
     width: 90px;
     height: 90px;
     border-radius: 12px;
-    object-fit: cover;
+    overflow: hidden;
     flex-shrink: 0;
     background-color: #f0f0f0;
-    /* Ak by sa obrázok nenačítal hneď */
+}
+
+.item-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s var(--spring-ease);
+}
+
+.item:hover .item-img {
+    transform: scale(1.08);
 }
 
 .info {
@@ -187,6 +202,11 @@ body.no-scroll {
 .price {
     font-weight: 700;
     font-size: 16px;
+    transition: transform 0.2s var(--spring-ease);
+}
+
+.item:hover .price {
+    transform: scale(1.03);
 }
 
 .add-btn {
@@ -199,15 +219,16 @@ body.no-scroll {
     font-weight: 600;
     font-size: 13px;
     user-select: none;
-    transition: all 0.2s ease;
+    transition: background 0.2s ease, transform 0.15s var(--spring-ease), box-shadow 0.2s ease;
+}
+
+.add-btn:hover {
+    background: var(--primary-hover);
+    box-shadow: 0 4px 10px rgba(11, 41, 64, 0.15);
 }
 
 .add-btn:active {
-    transform: scale(0.95);
-}
-
-.add-btn.added {
-    background: var(--success);
+    transform: scale(0.9);
 }
 
 /* ===== PLÁVAJÚCI KOŠÍK ===== */
@@ -224,16 +245,17 @@ body.no-scroll {
     display: none;
     cursor: pointer;
     box-shadow: 0 8px 24px rgba(11, 41, 64, 0.25);
-    transition: transform 0.2s ease, background 0.2s ease;
+    transition: transform 0.3s var(--spring-ease), background 0.2s ease, box-shadow 0.2s ease;
 }
 
 .floating-cart:hover {
     background: var(--primary-hover);
-    transform: scale(1.05);
+    transform: scale(1.08) translateY(-2px);
+    box-shadow: 0 12px 28px rgba(11, 41, 64, 0.35);
 }
 
 .floating-cart:active {
-    transform: scale(0.95);
+    transform: scale(0.88);
 }
 
 .cart-icon-wrapper {
@@ -265,18 +287,19 @@ body.no-scroll {
     justify-content: center;
     font-weight: 700;
     border: 2px solid var(--primary);
+    transition: transform 0.3s var(--spring-ease);
 }
 
-/* ===== KOŠÍK (OVERLAY & MODAL) ===== */
+/* ===== KOŠÍK OVERLAY & PANEL ===== */
 .cart-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(11, 41, 64, 0.3);
     z-index: 14;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-    backdrop-filter: blur(3px);
+    transition: opacity 0.35s var(--smooth-ease), visibility 0.35s var(--smooth-ease);
+    backdrop-filter: blur(4px);
 }
 
 .cart-overlay.show {
@@ -292,7 +315,7 @@ body.no-scroll {
     flex-direction: column;
     z-index: 15;
     transform: translateY(100%);
-    transition: transform 0.4s cubic-bezier(0.1, 0.76, 0.55, 0.94);
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .cart.open {
@@ -325,11 +348,16 @@ body.no-scroll {
     align-items: center;
     justify-content: center;
     color: var(--primary);
-    transition: background 0.2s;
+    transition: background 0.2s, transform 0.2s var(--spring-ease);
 }
 
 .close-cart:hover {
     background: #e2dcd5;
+    transform: scale(1.05) rotate(90deg);
+}
+
+.close-cart:active {
+    transform: scale(0.9);
 }
 
 .cart-main {
@@ -352,6 +380,7 @@ body.no-scroll {
 
 .table-input-container {
     margin-bottom: 24px;
+    position: relative;
 }
 
 .table-input-container input,
@@ -364,22 +393,54 @@ body.no-scroll {
     font-family: inherit;
     background: var(--card);
     color: var(--primary);
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: border-color 0.25s, box-shadow 0.25s var(--spring-ease), background 0.3s;
 }
 
 .table-input-container input:focus,
 .note-container textarea:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(11, 41, 64, 0.1);
+    box-shadow: 0 0 0 4px rgba(11, 41, 64, 0.08);
 }
 
-.table-input-container .error {
-    color: var(--danger);
-    font-size: 13px;
-    font-weight: 500;
-    margin-top: 6px;
-    display: none;
+/* ===== PRÉMIOVÝ UZAMKNUTÝ VIZUÁL PRE STÔL (QR CODE LOCK) ===== */
+.table-input-container input:disabled.locked {
+    background: #eae4dd;
+    color: #4a5d6e;
+    border-color: rgba(123, 138, 152, 0.3);
+    cursor: not-allowed;
+    font-weight: 700;
+    box-shadow: none !important;
+    padding-left: 40px;
+    /* Priestor pre ikonku zámku ak by sme chceli, alebo odsadenie */
+}
+
+/* Malý decentný podtext pod zamknutým políčkom */
+.table-input-container input:disabled.locked+.error {
+    display: none !important;
+    /* Skryje chybovú hlášku, ak je zamknutý úspešne */
+}
+
+.table-input-container input:disabled.locked::after {
+    content: "🔒 Locked via QR";
+}
+
+/* DEKORÁCIA ZÁMKU CEZ CSS */
+.table-input-container::before {
+    content: "🔒";
+    position: absolute;
+    left: 14px;
+    top: 38px;
+    font-size: 14px;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: opacity 0.3s var(--spring-ease), transform 0.3s var(--spring-ease);
+    pointer-events: none;
+}
+
+.table-input-container:has(input:disabled.locked)::before {
+    opacity: 0.7;
+    transform: scale(1);
 }
 
 /* POLOŽKY KOŠÍKA */
@@ -396,8 +457,9 @@ body.no-scroll {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
     border: 1px solid var(--border);
+    animation: pop-in 0.3s var(--spring-ease) forwards;
 }
 
 .cart-item-details strong {
@@ -433,11 +495,16 @@ body.no-scroll {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.2s;
+    transition: background 0.2s, transform 0.15s var(--spring-ease);
 }
 
 .qty button:hover {
     background: #e2dcd5;
+    transform: scale(1.05);
+}
+
+.qty button:active {
+    transform: scale(0.88);
 }
 
 .note-container {
@@ -449,40 +516,206 @@ textarea {
     resize: none;
 }
 
-/* SPODNÁ LIŠTA */
 .cart-footer {
     padding: 16px 20px;
     border-top: 1px solid var(--border);
     background: var(--card);
     padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    min-height: calc(90px + env(safe-area-inset-bottom, 0px));
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
+/* ===== STRIPE/APPLE PAY MORPHING BUTTON ===== */
 .submit {
+    position: relative;
     width: 100%;
+    height: 58px;
+    margin: 0 auto;
     background: var(--primary);
     color: #fff;
     border: none;
     border-radius: 14px;
-    padding: 18px;
     font-size: 16px;
     font-weight: 700;
     cursor: pointer;
     user-select: none;
-    transition: background 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    overflow: hidden;
+
+    transition: width 0.4s var(--spring-ease),
+        background 0.3s ease,
+        border-radius 0.4s var(--spring-ease),
+        transform 0.15s ease,
+        box-shadow 0.3s ease;
 }
 
-.submit:hover {
+.submit .btn-text {
+    white-space: nowrap;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.submit.is-success-full .success-text {
+    animation: fadeInScale 0.3s var(--spring-ease) forwards;
+}
+
+.submit:not(:disabled):not(.is-loading):not(.is-success-circle):not(.is-success-full):hover {
     background: var(--primary-hover);
+    box-shadow: 0 6px 20px rgba(11, 41, 64, 0.2);
 }
 
-.submit:active {
-    transform: scale(0.98);
+.submit:not(:disabled):not(.is-loading):not(.is-success-circle):not(.is-success-full):active {
+    transform: scale(0.96);
 }
 
-.submit:disabled {
+.submit:disabled:not(.is-loading):not(.is-success-circle):not(.is-success-full) {
     background: var(--secondary);
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+/* FÁZA 1: LOADING */
+.submit.is-loading {
+    width: 58px;
+    border-radius: 50%;
+    background: var(--secondary);
+    pointer-events: none;
+}
+
+.submit.is-loading .btn-text {
+    opacity: 0;
+    transform: scale(0.8);
+}
+
+.submit-spinner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -12px;
+    margin-top: -12px;
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s;
+}
+
+.submit.is-loading .submit-spinner {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* FÁZA 2: ÚSTECH KRÚŽOK */
+.submit.is-success-circle {
+    width: 58px;
+    border-radius: 50%;
+    background: var(--success) !important;
+    pointer-events: none;
+    box-shadow: 0 0 0 6px rgba(40, 167, 69, 0.2);
+    animation: successPop 0.4s var(--spring-ease) forwards;
+}
+
+.success-svg {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 32px;
+    height: 32px;
+    fill: none;
+    stroke: white;
+    stroke-width: 3.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 40;
+    stroke-dashoffset: 40;
+    animation: drawCheck 0.3s 0.1s var(--spring-ease) forwards;
+}
+
+/* FÁZA 3: ÚSPECH ROZTIAHNUTIE */
+.submit.is-success-full {
+    width: 100%;
+    border-radius: 14px;
+    background: var(--success) !important;
+    pointer-events: none;
+    box-shadow: 0 8px 24px rgba(40, 167, 69, 0.3);
+}
+
+/* KEYFRAMES */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes successPop {
+    0% {
+        transform: scale(0.9);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes drawCheck {
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes fadeInScale {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* VÝBUCH KONFETI */
+.confetti-dot {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    background: var(--success);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10000;
+    transform: translate(-50%, -50%) scale(0);
+    animation: confettiBurst 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes confettiBurst {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+    }
+
+    50% {
+        transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(calc(-50% + var(--tx) * 1.5), calc(-50% + var(--ty) * 1.5)) scale(0);
+        opacity: 0;
+    }
 }
 
 /* ===== TOAST NOTIFIKÁCIE ===== */
@@ -505,21 +738,21 @@ textarea {
     color: var(--primary);
     padding: 14px 20px;
     border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
     font-size: 14px;
     font-weight: 600;
     display: flex;
     align-items: center;
     gap: 12px;
     opacity: 0;
-    transform: translateY(-20px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: translateY(-30px) scale(0.9);
+    transition: opacity 0.4s var(--spring-ease), transform 0.4s var(--spring-ease);
     pointer-events: auto;
 }
 
 .toast.show {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
 }
 
 .toast.success {
@@ -534,7 +767,7 @@ textarea {
     border-left: 5px solid var(--primary);
 }
 
-/* ===== MEDIA QUERIES (DESKTOP / TABLET) ===== */
+/* MEDIA QUERIES */
 @media (min-width: 768px) {
     .category-items {
         grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -543,7 +776,6 @@ textarea {
     .chips-container {
         display: flex;
         justify-content: center;
-        /* Centrovanie kategórií na veľkom displeji */
     }
 
     .cart {
@@ -554,10 +786,143 @@ textarea {
         width: 420px;
         transform: translateX(100%);
         border-left: 1px solid var(--border);
-        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.05);
+        transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .cart.open {
         transform: translateX(0);
     }
+}
+
+/* OSTATNÉ INTERAKCIE */
+.animate-fade-in {
+    opacity: 0;
+    animation: fadeInUp 0.5s var(--spring-ease) forwards;
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(24px) scale(0.97);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.pop-in {
+    animation: popIn 0.3s var(--spring-ease) forwards;
+}
+
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.7);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.pop-bounce {
+    animation: popBounce 0.4s var(--spring-ease);
+}
+
+@keyframes popBounce {
+    0% {
+        transform: scale(1);
+    }
+
+    40% {
+        transform: scale(1.45) rotate(-4deg);
+    }
+
+    70% {
+        transform: scale(0.92) rotate(2deg);
+    }
+
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+.jello-click {
+    animation: jelloClick 0.5s ease;
+}
+
+@keyframes jelloClick {
+    0% {
+        transform: scale(1);
+    }
+
+    30% {
+        transform: scale(1.18, 0.85);
+    }
+
+    40% {
+        transform: scale(0.85, 1.15);
+    }
+
+    55% {
+        transform: scale(1.1, 0.9);
+    }
+
+    70% {
+        transform: scale(0.95, 1.02);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.menu-qty-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--chip);
+    border-radius: 20px;
+    padding: 4px 6px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.menu-qty-selector button {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--primary);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(11, 41, 64, 0.06);
+    transition: background 0.2s, transform 0.15s var(--spring-ease), color 0.2s;
+}
+
+.menu-qty-selector button:hover {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+}
+
+.menu-qty-selector button:active {
+    transform: scale(0.8);
+}
+
+.menu-qty-selector .menu-qty-num {
+    font-weight: 700;
+    font-size: 14px;
+    min-width: 18px;
+    text-align: center;
+    user-select: none;
+    display: inline-block;
 }

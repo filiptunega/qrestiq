@@ -4,6 +4,7 @@ let data = {};
 let cart = {};
 let tableNumber = null;
 let availableTables = [];
+let itemLookup = {};
 
 // DOM elementy
 const categoriesEl = document.getElementById('categories');
@@ -28,13 +29,11 @@ function showToast(message, type = 'info') {
 
     toastContainer.appendChild(toast);
 
-    // Spustiť animáciu
     setTimeout(() => toast.classList.add('show'), 10);
 
-    // Odstrániť po 3 sekundách
     setTimeout(() => {
         toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 300); // Čas na dokončenie CSS transition
+        setTimeout(() => toast.remove(), 400);
     }, 3000);
 }
 
@@ -59,9 +58,11 @@ function resetTableState() {
     tableInput.value = '';
     errorEl.style.display = 'none';
     tableInput.style.borderColor = '';
+    tableInput.disabled = false;
+    tableInput.classList.remove('locked');
 }
 
-// ===== NAČÍTANIE STOLOV =====
+// ===== NAČÍTANIE STOLOV Z BACKENDU =====
 fetch(`${API}/tables`)
     .then(res => res.json())
     .then(tables => {
@@ -70,8 +71,9 @@ fetch(`${API}/tables`)
     })
     .catch(err => {
         console.error('Error loading tables:', err);
-        // Fallback pre testovanie, ak API nebeží (voliteľné vymazať)
-        availableTables = [1, 2, 3, 4, 5];
+        // Fallback pre testovanie, ak API neodpovedá
+        availableTables = [1, 2, 3, 4, 5, 20];
+        setTableFromQuery();
     });
 
 function getQueryParam(name) {
@@ -82,7 +84,11 @@ function getQueryParam(name) {
 function setTableFromQuery() {
     const tableParam = getQueryParam('table');
 
+    // Prípad A: V URL NIE JE parameter stola -> umožníme zápis/načítame z cache
     if (tableParam === null) {
+        tableInput.disabled = false;
+        tableInput.classList.remove('locked');
+
         const savedTable = localStorage.getItem('qrestiq_table');
         const parsedSaved = parseInt(savedTable);
 
@@ -94,11 +100,29 @@ function setTableFromQuery() {
         return;
     }
 
+    // Prípad B: V URL JE parameter stola -> Vložíme ho, priradíme a napevno ZAMKNEME
     const table = parseInt(tableParam);
-    if (!isNaN(table) && availableTables.includes(table)) {
-        setValidTable(table);
+    if (!isNaN(table)) {
+        tableNumber = table;
+        tableInput.value = table; // Vloží číslo stola priamo do vizuálneho okienka
+        tableInput.disabled = true; // Zablokuje zmenu zákazníkom
+        tableInput.classList.add('locked'); // Aktivuje prémiový locked štýl
+
+        if (availableTables.length > 0 && !availableTables.includes(table)) {
+            errorEl.style.display = 'block';
+            errorEl.innerText = 'Stôl nie je v zozname aktívnych, objednávka však odíde na stôl ' + table;
+            tableInput.style.borderColor = 'var(--danger)';
+        } else {
+            errorEl.style.display = 'none';
+            tableInput.style.borderColor = '';
+        }
     } else {
-        setInvalidTable();
+        resetTableState();
+        tableInput.value = tableParam;
+        errorEl.style.display = 'block';
+        errorEl.innerText = 'Neplatný kód stola';
+        tableInput.disabled = true;
+        tableInput.classList.add('locked');
     }
 }
 
@@ -122,6 +146,11 @@ fetch(`${API}/menu/grouped`)
     .then(res => res.json())
     .then(grouped => {
         data = grouped;
+        itemLookup = {};
+        Object.values(data).flat().forEach(item => {
+            itemLookup[item.id] = item;
+        });
+
         renderCategories();
         renderAllMenu();
         initScrollSpy();
@@ -137,25 +166,20 @@ function renderCategories() {
         const c = document.createElement('div');
         c.className = 'chip' + (index === 0 ? ' active' : '');
         c.innerText = cat;
-        c.dataset.category = cat; // pre ľahšie vyhľadávanie v ScrollSpy
-
-        c.onclick = () => {
-            scrollToCategory(cat);
-        };
+        c.dataset.category = cat;
+        c.onclick = () => scrollToCategory(cat);
         categoriesEl.appendChild(c);
     });
 }
 
 function scrollToCategory(cat) {
     const el = document.getElementById('cat-' + cat);
-    if (el) {
-        // scroll-margin-top v CSS rieši presný odskok
-        el.scrollIntoView({ behavior: 'smooth' });
-    }
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
 }
 
 function renderAllMenu() {
     menuEl.innerHTML = '';
+    let globalItemIndex = 0;
 
     Object.keys(data).forEach(cat => {
         const section = document.createElement('div');
@@ -168,65 +192,106 @@ function renderAllMenu() {
 
         data[cat].forEach(item => {
             const div = document.createElement('div');
-            div.className = 'item';
+            div.className = 'item animate-fade-in';
+            div.style.animationDelay = `${globalItemIndex * 0.05}s`;
+            globalItemIndex++;
+
             div.innerHTML = `
-                <img src="${item.img || 'assets/img/placeholder.png'}" class="item-img" alt="${item.name}" loading="lazy" />
+                <div class="item-img-wrapper">
+                    <img src="${item.imgUrl || 'assets/img/placeholder.png'}" class="item-img" alt="${item.name}" loading="lazy" />
+                </div>
                 <div class="info">
                     <div>
                         <h3>${item.name}</h3>
-                        <p>${item.desc}</p>
+                        <p>${item.description}</p>
                     </div>
                     <div class="item-footer">
                         <div class="price">€${item.price.toFixed(2)}</div>
-                        <button class="add-btn">Add +</button>
+                        <div class="item-action" data-id="${item.id}"></div>
                     </div>
                 </div>
             `;
-
-            const btn = div.querySelector('.add-btn');
-            btn.onclick = (e) => {
-                addToCart(item);
-
-                // Vizuálny feedback "Pridané"
-                const originalText = btn.innerText;
-                btn.innerText = 'Added ✓';
-                btn.classList.add('added');
-
-                setTimeout(() => {
-                    btn.innerText = originalText;
-                    btn.classList.remove('added');
-                }, 1000);
-            };
-
             grid.appendChild(div);
         });
 
         section.appendChild(grid);
         menuEl.appendChild(section);
     });
+
+    updateMenuActions();
 }
 
-// ===== SCROLL SPY (Sledovanie rolovania pre aktívnu kategóriu) =====
+function updateMenuActions() {
+    document.querySelectorAll('.item-action').forEach(container => {
+        const itemId = container.dataset.id;
+        const cartItem = cart[itemId];
+        const currentInner = container.firstElementChild;
+
+        if (cartItem && cartItem.qty > 0) {
+            if (currentInner && currentInner.classList.contains('menu-qty-selector')) {
+                const numEl = currentInner.querySelector('.menu-qty-num');
+                if (numEl && numEl.innerText !== String(cartItem.qty)) {
+                    numEl.innerText = cartItem.qty;
+                    numEl.classList.remove('pop-bounce');
+                    void numEl.offsetWidth;
+                    numEl.classList.add('pop-bounce');
+                }
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="menu-qty-selector pop-in">
+                    <button class="menu-minus">-</button>
+                    <span class="menu-qty-num pop-bounce">${cartItem.qty}</span>
+                    <button class="menu-plus">+</button>
+                </div>
+            `;
+
+            container.querySelector('.menu-minus').onclick = (e) => {
+                e.stopPropagation();
+                cart[itemId].qty--;
+                if (cart[itemId].qty <= 0) delete cart[itemId];
+                updateCart();
+            };
+
+            container.querySelector('.menu-plus').onclick = (e) => {
+                e.stopPropagation();
+                cart[itemId].qty++;
+                updateCart();
+            };
+        } else {
+            if (currentInner && currentInner.classList.contains('menu-qty-selector')) {
+                container.innerHTML = `<button class="add-btn pop-in">Add +</button>`;
+            } else if (!currentInner || !currentInner.classList.contains('add-btn')) {
+                container.innerHTML = `<button class="add-btn">Add +</button>`;
+            }
+
+            const btn = container.querySelector('.add-btn');
+            if (btn) {
+                btn.onclick = (e) => {
+                    e.stopPropagation();
+                    const item = itemLookup[itemId];
+                    if (item) addToCart(item);
+                };
+            }
+        }
+    });
+}
+
 function initScrollSpy() {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 const id = entry.target.id.replace('cat-', '');
-
                 document.querySelectorAll('.chip').forEach(ch => ch.classList.remove('active'));
                 const activeChip = document.querySelector(`.chip[data-category="${id}"]`);
-
                 if (activeChip) {
                     activeChip.classList.add('active');
-                    // Jemne posunie zoznam s chipmi, aby bol aktívny viditeľný
                     activeChip.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
                 }
             }
         });
-    }, {
-        // Spustí sa, keď hlavička kategórie prejde hornou 1/3 obrazovky
-        rootMargin: '-130px 0px -70% 0px'
-    });
+    }, { rootMargin: '-130px 0px -70% 0px' });
 
     document.querySelectorAll('.category-section').forEach(sec => observer.observe(sec));
 }
@@ -250,16 +315,15 @@ function updateCart() {
 
         const row = document.createElement('div');
         row.className = 'cart-item';
-
         row.innerHTML = `
             <div class="cart-item-details">
                 <strong>${i.name}</strong>
                 <small>€${i.price.toFixed(2)} each</small>
             </div>
             <div class="qty">
-                <button class="minus" aria-label="Decrease quantity">-</button>
-                <span>${i.qty}</span>
-                <button class="plus" aria-label="Increase quantity">+</button>
+                <button class="minus">-</button>
+                <span class="cart-qty-num">${i.qty}</span>
+                <button class="plus">+</button>
             </div>
         `;
 
@@ -273,34 +337,44 @@ function updateCart() {
             i.qty++;
             updateCart();
         };
-
         cartItemsEl.appendChild(row);
     });
 
-    submitBtn.innerText = `Submit Order – €${total.toFixed(2)}`;
+    submitBtn.innerHTML = `
+        <span class="btn-text">Submit Order – €${total.toFixed(2)}</span>
+        <div class="submit-spinner"></div>
+    `;
     submitBtn.disabled = itemCount === 0;
 
     if (itemCount > 0) {
         openCartBtn.style.display = 'block';
         cartCountEl.style.display = 'flex';
-        cartCountEl.innerText = itemCount;
+
+        if (cartCountEl.innerText !== String(itemCount)) {
+            cartCountEl.innerText = itemCount;
+            cartCountEl.classList.remove('pop-bounce');
+            void cartCountEl.offsetWidth;
+            cartCountEl.classList.add('pop-bounce');
+
+            openCartBtn.classList.remove('jello-click');
+            void openCartBtn.offsetWidth;
+            openCartBtn.classList.add('jello-click');
+        }
     } else {
         openCartBtn.style.display = 'none';
         cartCountEl.style.display = 'none';
-        if (cartEl.classList.contains('open')) {
-            toggleCart(false);
-        }
+        cartCountEl.innerText = '0';
+        if (cartEl.classList.contains('open')) toggleCart(false);
     }
+
+    updateMenuActions();
 }
 
 function toggleCart(show) {
     if (show) {
         cartEl.classList.add('open');
         cartOverlayEl.classList.add('show');
-        // Vypíname no-scroll len na mobile, na desktope je to Side Drawer
-        if (window.innerWidth < 768) {
-            document.body.classList.add('no-scroll');
-        }
+        if (window.innerWidth < 768) document.body.classList.add('no-scroll');
     } else {
         cartEl.classList.remove('open');
         cartOverlayEl.classList.remove('show');
@@ -312,15 +386,37 @@ openCartBtn.onclick = () => toggleCart(true);
 closeCartBtn.onclick = () => toggleCart(false);
 cartOverlayEl.onclick = () => toggleCart(false);
 
-// ===== ODOSLANIE OBJEDNÁVKY =====
+// ===== FLUID ANIMÁCIA KONFETÍ =====
+function fireConfetti(button) {
+    const rect = button.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    for (let i = 0; i < 8; i++) {
+        let dot = document.createElement('div');
+        dot.className = 'confetti-dot';
+        document.body.appendChild(dot);
+
+        let angle = (i * 45) * Math.PI / 180;
+        let distance = 50;
+        let tx = Math.cos(angle) * distance;
+        let ty = Math.sin(angle) * distance;
+
+        dot.style.left = centerX + 'px';
+        dot.style.top = centerY + 'px';
+        dot.style.setProperty('--tx', `${tx}px`);
+        dot.style.setProperty('--ty', `${ty}px`);
+
+        setTimeout(() => dot.remove(), 600);
+    }
+}
+
 submitBtn.onclick = async () => {
     if (!tableNumber) {
         tableInput.focus();
         tableInput.style.borderColor = 'var(--danger)';
         errorEl.style.display = 'block';
         errorEl.innerText = 'Please enter a valid table number before submitting.';
-
-        // Na mobiloch scrolneme košík úplne hore, aby videl chybu
         cartEl.querySelector('.cart-main').scrollTo({ top: 0, behavior: 'smooth' });
         return;
     }
@@ -335,7 +431,7 @@ submitBtn.onclick = async () => {
     };
 
     submitBtn.disabled = true;
-    submitBtn.innerText = 'Sending...';
+    submitBtn.classList.add('is-loading');
 
     try {
         const res = await fetch(`${API}/orders`, {
@@ -348,25 +444,46 @@ submitBtn.onclick = async () => {
             const err = await res.json();
             const msg = err.errors ? err.errors.join('\n') : 'Error sending order.';
             showToast(msg, 'error');
+            submitBtn.classList.remove('is-loading');
             submitBtn.disabled = false;
-            submitBtn.innerText = `Submit Order – €${Object.values(cart).reduce((s, i) => s + i.price * i.qty, 0).toFixed(2)}`;
             return;
         }
 
         const order = await res.json();
 
-        // Reset
-        cart = {};
-        noteEl.value = '';
-        updateCart();
-        toggleCart(false);
+        submitBtn.classList.remove('is-loading');
+        submitBtn.classList.add('is-success-circle');
+        submitBtn.innerHTML = `
+            <svg class="success-svg" viewBox="0 0 24 24">
+                <path d="M5 13l4 4L19 7" />
+            </svg>
+        `;
 
-        showToast(`Objednávka #${order.id || ''} bola úspešne odoslaná!`, 'success');
+        fireConfetti(submitBtn);
+
+        setTimeout(() => {
+            submitBtn.classList.remove('is-success-circle');
+            submitBtn.classList.add('is-success-full');
+            submitBtn.innerHTML = `<span class="btn-text success-text">Sent to Kitchen! 👨‍🍳</span>`;
+        }, 800);
+
+        setTimeout(() => {
+            cart = {};
+            noteEl.value = '';
+            toggleCart(false);
+
+            setTimeout(() => {
+                submitBtn.classList.remove('is-success-full');
+                updateCart();
+            }, 400);
+
+            showToast(`Objednávka #${order.id || ''} bola odoslaná!`, 'success');
+        }, 2200);
 
     } catch (err) {
         console.error('Submit error:', err);
-        showToast('Nepodarilo sa odoslať objednávku. Skontrolujte pripojenie.', 'error');
+        showToast('Nepodarilo sa odoslať objednávku.', 'error');
+        submitBtn.classList.remove('is-loading');
         submitBtn.disabled = false;
-        submitBtn.innerText = `Submit Order – €${Object.values(cart).reduce((s, i) => s + i.price * i.qty, 0).toFixed(2)}`;
     }
 };
