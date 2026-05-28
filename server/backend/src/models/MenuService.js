@@ -113,6 +113,31 @@ export class MenuService {
     }
 
     /**
+     * Hromadná aktualizácia sort_order.
+     * @param {{ id: number, sortOrder: number }[]} items
+     * @returns {Promise<void>}
+     */
+    async reorder(items) {
+        if (!items.length) return;
+        const client = await pool.connect();
+        try {
+            await client.query('BEGIN');
+            for (const { id, sortOrder } of items) {
+                await client.query(
+                    'UPDATE menu_items SET sort_order = $1, updated_at = NOW() WHERE id = $2',
+                    [sortOrder, id]
+                );
+            }
+            await client.query('COMMIT');
+        } catch (err) {
+            await client.query('ROLLBACK');
+            throw err;
+        } finally {
+            client.release();
+        }
+    }
+
+    /**
      * Vráti zoznam unikátnych kategórií.
      * @returns {Promise<string[]>}
      */

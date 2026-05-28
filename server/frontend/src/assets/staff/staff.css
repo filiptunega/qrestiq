@@ -982,3 +982,51 @@ body {
 
 .btn-deactivate:hover { background: #ffedd5; }
 .btn-activate:hover   { background: #dcfce7; }
+
+
+/* ===== DRAG & DROP ===== */
+.menu-card {
+    position: relative;
+    cursor: default;
+    transition: box-shadow 0.15s, opacity 0.15s, transform 0.15s;
+}
+
+.drag-handle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 18px;
+    color: var(--secondary);
+    cursor: grab;
+    line-height: 1;
+    opacity: 0.4;
+    transition: opacity 0.15s;
+    user-select: none;
+}
+
+.menu-card:hover .drag-handle {
+    opacity: 0.9;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+.menu-card.dragging {
+    opacity: 0.4;
+    transform: scale(0.97);
+    box-shadow: 0 8px 24px rgba(11,41,64,0.18);
+}
+
+.menu-card.drag-over {
+    box-shadow: 0 0 0 2px var(--primary), 0 4px 16px rgba(11,41,64,0.12);
+    transform: scale(1.02);
+}
+
+.drag-hint {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--secondary);
+    margin-left: 8px;
+    opacity: 0.7;
+}

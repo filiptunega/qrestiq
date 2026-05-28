@@ -440,6 +440,10 @@ async function refreshCategoryOptions() {
     } catch {}
 }
 
+// ===== DRAG & DROP STATE =====
+let dragSrcCard = null;
+let dragSrcId   = null;
+
 function renderMenuItems() {
     const filterCat     = menuCategoryFilter.value;
     const showInactive  = showInactiveCheck.checked;
@@ -470,7 +474,7 @@ function renderMenuItems() {
     Object.entries(groups).sort(([a], [b]) => a.localeCompare(b)).forEach(([cat, catItems]) => {
         const section = document.createElement('div');
         section.className = 'menu-category-section';
-        section.innerHTML = `<h3 class="menu-category-title">${cat}</h3>`;
+        section.innerHTML = `<h3 class="menu-category-title">${cat} <span class="drag-hint">drag to reorder</span></h3>`;
 
         const grid = document.createElement('div');
         grid.className = 'menu-cards';
@@ -478,7 +482,10 @@ function renderMenuItems() {
         catItems.forEach(item => {
             const card = document.createElement('div');
             card.className = `menu-card${item.isActive ? '' : ' menu-card--inactive'}`;
+            card.draggable = true;
+            card.dataset.id = item.id;
             card.innerHTML = `
+                <div class="drag-handle" title="Drag to reorder">⠿</div>
                 ${item.imgUrl ? `<img class="menu-card-img" src="${escapeHtml(item.imgUrl)}" alt="${escapeHtml(item.name)}" onerror="this.style.display='none'">` : ''}
                 <div class="menu-card-body">
                     <div class="menu-card-header">
@@ -488,7 +495,6 @@ function renderMenuItems() {
                     ${item.description ? `<p class="menu-card-desc">${escapeHtml(item.description)}</p>` : ''}
                     <div class="menu-card-meta">
                         <span class="menu-badge ${item.isActive ? 'badge-active' : 'badge-inactive'}">${item.isActive ? 'Active' : 'Inactive'}</span>
-                        <span class="menu-card-order">Order: ${item.sortOrder}</span>
                     </div>
                     <div class="menu-card-actions">
                         <button class="btn btn-edit" data-id="${item.id}">✏️ Edit</button>
@@ -496,6 +502,52 @@ function renderMenuItems() {
                     </div>
                 </div>
             `;
+
+            // Drag events
+            card.addEventListener('dragstart', (e) => {
+                dragSrcCard = card;
+                dragSrcId   = item.id;
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', item.id);
+                setTimeout(() => card.classList.add('dragging'), 0);
+            });
+            card.addEventListener('dragend', () => {
+                card.classList.remove('dragging');
+                grid.querySelectorAll('.menu-card').forEach(c => c.classList.remove('drag-over'));
+                dragSrcCard = null;
+                dragSrcId   = null;
+            });
+            card.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                if (card !== dragSrcCard) {
+                    grid.querySelectorAll('.menu-card').forEach(c => c.classList.remove('drag-over'));
+                    card.classList.add('drag-over');
+                }
+            });
+            card.addEventListener('dragleave', () => {
+                card.classList.remove('drag-over');
+            });
+            card.addEventListener('drop', (e) => {
+                e.preventDefault();
+                card.classList.remove('drag-over');
+                if (!dragSrcCard || dragSrcCard === card) return;
+
+                // Reorder in DOM
+                const cards = [...grid.querySelectorAll('.menu-card')];
+                const srcIdx  = cards.indexOf(dragSrcCard);
+                const destIdx = cards.indexOf(card);
+
+                if (srcIdx < destIdx) {
+                    grid.insertBefore(dragSrcCard, card.nextSibling);
+                } else {
+                    grid.insertBefore(dragSrcCard, card);
+                }
+
+                // Persist new order
+                saveMenuOrder(grid);
+            });
+
             grid.appendChild(card);
         });
 
@@ -503,6 +555,30 @@ function renderMenuItems() {
         menuItemsGrid.appendChild(section);
     });
 }
+
+async function saveMenuOrder(grid) {
+    const cards = [...grid.querySelectorAll('.menu-card')];
+    const items = cards.map((card, idx) => ({ id: Number(card.dataset.id), sortOrder: idx }));
+
+    // Update in-memory allMenuItems so filter/re-render keeps order
+    items.forEach(({ id, sortOrder }) => {
+        const m = allMenuItems.find(i => Number(i.id) === id);
+        if (m) m.sortOrder = sortOrder;
+    });
+
+    try {
+        const res = await fetch(`${API}/menu/reorder`, {
+            method: 'PATCH',
+            headers: authHeaders(),
+            body: JSON.stringify({ items }),
+        });
+        if (res.status === 401) { logout(); return; }
+        if (!res.ok) throw new Error('Reorder failed');
+    } catch (err) {
+        console.error('Failed to save order:', err);
+    }
+}
+
 
 function escapeHtml(str) {
     return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');

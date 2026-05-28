@@ -122,6 +122,19 @@ export class MenuController {
         }
     }
 
+    async reorder(req, res, next) {
+        try {
+            const items = req.body?.items;
+            if (!Array.isArray(items)) {
+                return res.status(400).json({ message: 'Očakáva sa pole items: [{ id, sortOrder }].' });
+            }
+            await menuService.reorder(items.map(i => ({ id: Number(i.id), sortOrder: Number(i.sortOrder) })));
+            res.status(204).end();
+        } catch (err) {
+            next(err);
+        }
+    }
+
     async destroy(req, res, next) {
         try {
             const id = Number(req.params.id);

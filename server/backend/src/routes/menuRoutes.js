@@ -12,6 +12,7 @@ router.get('/',                 (req, res, next) => controller.index(req, res, n
 // ---- Chránené admin endpointy ----
 router.get('/admin/all',        authMiddleware, (req, res, next) => controller.adminAll(req, res, next));
 router.get('/admin/categories', authMiddleware, (req, res, next) => controller.adminCategories(req, res, next));
+router.patch('/reorder',          authMiddleware, (req, res, next) => controller.reorder(req, res, next));
 router.post('/',                authMiddleware, (req, res, next) => controller.create(req, res, next));
 router.put('/:id',              authMiddleware, (req, res, next) => controller.update(req, res, next));
 router.delete('/:id',           authMiddleware, (req, res, next) => controller.destroy(req, res, next));
