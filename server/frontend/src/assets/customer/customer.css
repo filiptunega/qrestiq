@@ -926,3 +926,511 @@ textarea {
     user-select: none;
     display: inline-block;
 }
+
+/* ===== RECEIPT PRINT ANIMATION ===== */
+.receipt-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.receipt-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(11, 41, 64, 0);
+    transition: background 0.4s ease;
+}
+
+.receipt-overlay.active .receipt-backdrop {
+    background: rgba(11, 41, 64, 0.55);
+    backdrop-filter: blur(6px);
+}
+
+.receipt-printer {
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 60px;
+    background: linear-gradient(145deg, #2d4a5e, #1a3347);
+    border-radius: 10px 10px 6px 6px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    z-index: 9002;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: top 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.receipt-overlay.active .receipt-printer {
+    top: 40px;
+}
+
+.receipt-printer::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 6px;
+    background: #fff;
+    border-radius: 2px 2px 0 0;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+.receipt-printer-light {
+    width: 10px;
+    height: 10px;
+    background: #28a745;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #28a745;
+    animation: printerBlink 0.4s ease infinite;
+}
+
+@keyframes printerBlink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+}
+
+.receipt-paper {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    background: #fff;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+    z-index: 9001;
+    overflow: hidden;
+    top: 97px;
+    height: 0;
+    transition: height 0.9s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.receipt-overlay.active .receipt-paper {
+    height: var(--receipt-target-height, 280px);
+}
+
+.receipt-paper-inner {
+    padding: 16px 14px 12px;
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    color: #222;
+    line-height: 1.6;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s 0.7s ease, transform 0.3s 0.7s ease;
+}
+
+.receipt-overlay.active .receipt-paper-inner {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.receipt-paper-inner .r-logo {
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    margin-bottom: 4px;
+}
+
+.receipt-paper-inner .r-divider {
+    border-bottom: 1px dashed #ccc;
+    margin: 6px 0;
+}
+
+.receipt-paper-inner .r-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+}
+
+.receipt-paper-inner .r-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: bold;
+    margin-top: 4px;
+}
+
+.receipt-paper-inner .r-footer {
+    text-align: center;
+    font-size: 9px;
+    color: #888;
+    margin-top: 6px;
+}
+
+.receipt-paper-inner .r-table {
+    text-align: center;
+    font-size: 11px;
+    margin-bottom: 4px;
+}
+
+.receipt-paper::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 8px;
+    background: repeating-linear-gradient(90deg,
+            #fff 0px,
+            #fff 6px,
+            transparent 6px,
+            transparent 10px);
+    pointer-events: none;
+}
+
+/* ===== RECEIPT FLIGHT TO KITCHEN ===== */
+.receipt-fly {
+    position: fixed;
+    z-index: 9900;
+    pointer-events: none;
+    width: 70px;
+    height: 90px;
+    background: white;
+    border-radius: 4px 4px 6px 6px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 6px;
+    opacity: 0;
+}
+
+.receipt-fly::before {
+    content: '🧾';
+    font-size: 28px;
+}
+
+.receipt-fly::after {
+    content: 'ORDER';
+    font-family: 'Courier New', monospace;
+    font-size: 7px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: #555;
+}
+
+@keyframes flyToKitchen {
+    0% {
+        opacity: 0;
+        transform: scale(0.4) rotate(-5deg);
+    }
+
+    10% {
+        opacity: 1;
+        transform: scale(1.1) rotate(3deg);
+    }
+
+    30% {
+        transform: scale(1) rotate(-2deg);
+    }
+
+    70% {
+        opacity: 1;
+        transform: scale(0.8) rotate(8deg) translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(0.2) rotate(20deg) translateY(-80px);
+    }
+}
+
+/* ===== KITCHEN FLASH ===== */
+.kitchen-flash {
+    position: fixed;
+    inset: 0;
+    z-index: 9800;
+    pointer-events: none;
+    opacity: 0;
+}
+
+@keyframes kitchenFlash {
+    0% {
+        opacity: 0;
+        background: radial-gradient(circle at 50% 0%, rgba(40, 167, 69, 0.4) 0%, transparent 60%);
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        background: radial-gradient(circle at 50% 0%, rgba(40, 167, 69, 0) 0%, transparent 60%);
+    }
+}
+
+/* ===== SPARKS / PARTICLES ===== */
+.spark {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    border-radius: 50%;
+    width: var(--size, 8px);
+    height: var(--size, 8px);
+    background: var(--color, #28a745);
+    box-shadow: 0 0 6px var(--color, #28a745);
+    opacity: 0;
+    animation: sparkFly var(--dur, 0.8s) var(--delay, 0s) cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes sparkFly {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(var(--tx, 60px), var(--ty, -80px)) scale(0);
+    }
+}
+
+/* ===== ADD TO CART RIPPLE ===== */
+.add-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.add-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+    opacity: 0;
+    transform: scale(0);
+    transition: transform 0.4s ease, opacity 0.4s ease;
+    border-radius: inherit;
+}
+
+.add-btn:active::after {
+    transform: scale(2.5);
+    opacity: 1;
+    transition: none;
+}
+
+/* ===== FLOATING CART PULSE ===== */
+.floating-cart.has-items {
+    animation: cartPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes cartPulse {
+
+    0%,
+    100% {
+        box-shadow: 0 8px 24px rgba(11, 41, 64, 0.25);
+    }
+
+    50% {
+        box-shadow: 0 8px 32px rgba(11, 41, 64, 0.5), 0 0 0 8px rgba(11, 41, 64, 0.08);
+    }
+}
+
+/* ===== CART ITEM SLIDE IN ===== */
+.cart-item {
+    animation: cartItemSlide 0.35s var(--spring-ease) both;
+}
+
+@keyframes cartItemSlide {
+    from {
+        opacity: 0;
+        transform: translateX(30px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+/* ===== CART ITEM REMOVE ===== */
+.cart-item.removing {
+    animation: cartItemRemove 0.3s var(--smooth-ease) forwards;
+}
+
+@keyframes cartItemRemove {
+    to {
+        opacity: 0;
+        transform: translateX(-30px) scale(0.9);
+        max-height: 0;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+    }
+}
+
+/* ===== CHIP ACTIVE RIPPLE ===== */
+.chip {
+    position: relative;
+    overflow: hidden;
+}
+
+.chip::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.35) 0%, transparent 70%);
+    opacity: 0;
+    transform: scale(0);
+    border-radius: inherit;
+    transition: none;
+}
+
+.chip:active::after {
+    opacity: 1;
+    transform: scale(1);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* ===== HEADER ENTRANCE ===== */
+.main-header {
+    animation: headerSlide 0.5s var(--spring-ease) both;
+}
+
+@keyframes headerSlide {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* ===== CHIPS CONTAINER ENTRANCE ===== */
+.chips-container {
+    animation: chipsSlide 0.5s 0.1s var(--spring-ease) both;
+}
+
+@keyframes chipsSlide {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* ===== SUBMIT BUTTON SHAKE ON ERROR ===== */
+@keyframes shakeError {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    20% {
+        transform: translateX(-8px);
+    }
+
+    40% {
+        transform: translateX(8px);
+    }
+
+    60% {
+        transform: translateX(-5px);
+    }
+
+    80% {
+        transform: translateX(5px);
+    }
+}
+
+.shake-error {
+    animation: shakeError 0.4s ease forwards !important;
+}
+
+/* ===== QTY CHANGE NUMBER FLIP ===== */
+@keyframes numFlip {
+    0% {
+        transform: translateY(-12px) scale(1.3);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+.num-flip {
+    animation: numFlip 0.25s var(--spring-ease) forwards;
+}
+
+/* ===== SUCCESS FULL SCREEN BURST ===== */
+.success-burst {
+    position: fixed;
+    inset: 0;
+    z-index: 8999;
+    pointer-events: none;
+    opacity: 0;
+}
+
+@keyframes successBurst {
+    0% {
+        opacity: 0;
+        background: radial-gradient(circle at 50% 95%, rgba(40, 167, 69, 0.6) 0%, transparent 40%);
+    }
+
+    30% {
+        opacity: 1;
+        background: radial-gradient(circle at 50% 95%, rgba(40, 167, 69, 0.3) 0%, transparent 60%);
+    }
+
+    100% {
+        opacity: 0;
+        background: radial-gradient(circle at 50% 95%, rgba(40, 167, 69, 0) 0%, transparent 70%);
+    }
+}
+
+/* ===== CONFETTI SHAPES ===== */
+.confetti-piece {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    opacity: 0;
+    animation: confettiFall var(--dur, 1.2s) var(--delay, 0s) ease-in forwards;
+    width: var(--w, 8px);
+    height: var(--h, 6px);
+    background: var(--color, #28a745);
+    border-radius: var(--radius, 2px);
+    transform-origin: center;
+}
+
+@keyframes confettiFall {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) rotate(0deg) scale(1);
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(var(--tx, 0px), var(--ty, 200px)) rotate(var(--rot, 360deg)) scale(0.5);
+    }
+}

@@ -348,6 +348,7 @@ function updateCart() {
 
     if (itemCount > 0) {
         openCartBtn.style.display = 'block';
+        openCartBtn.classList.add('has-items');
         cartCountEl.style.display = 'flex';
 
         if (cartCountEl.innerText !== String(itemCount)) {
@@ -362,6 +363,7 @@ function updateCart() {
         }
     } else {
         openCartBtn.style.display = 'none';
+        openCartBtn.classList.remove('has-items');
         cartCountEl.style.display = 'none';
         cartCountEl.innerText = '0';
         if (cartEl.classList.contains('open')) toggleCart(false);
@@ -411,6 +413,180 @@ function fireConfetti(button) {
     }
 }
 
+// ===== SPARK BURST =====
+function fireSparks(x, y, count = 20) {
+    const colors = ['#28a745', '#ffd700', '#ff6b35', '#00d4ff', '#fff', '#a8ff78'];
+    for (let i = 0; i < count; i++) {
+        const spark = document.createElement('div');
+        spark.className = 'spark';
+        const angle = (Math.random() * 360) * (Math.PI / 180);
+        const dist = 60 + Math.random() * 120;
+        const tx = Math.cos(angle) * dist;
+        const ty = Math.sin(angle) * dist;
+        const size = 4 + Math.random() * 8;
+        const dur = 0.5 + Math.random() * 0.6;
+        const delay = Math.random() * 0.15;
+        spark.style.cssText = `
+            left:${x}px; top:${y}px;
+            --tx:${tx}px; --ty:${ty}px;
+            --size:${size}px; --color:${colors[Math.floor(Math.random() * colors.length)]};
+            --dur:${dur}s; --delay:${delay}s;
+        `;
+        document.body.appendChild(spark);
+        setTimeout(() => spark.remove(), (dur + delay) * 1000 + 100);
+    }
+}
+
+// ===== CONFETTI PIECES =====
+function fireConfettiPieces(x, y, count = 40) {
+    const colors = ['#28a745', '#ffd700', '#ff4d4d', '#00bcd4', '#9c27b0', '#ff9800', '#ffffff'];
+    for (let i = 0; i < count; i++) {
+        const p = document.createElement('div');
+        p.className = 'confetti-piece';
+        const angle = -180 + Math.random() * 360;
+        const dist = 80 + Math.random() * 200;
+        const tx = Math.cos(angle * Math.PI / 180) * dist;
+        const ty = -(80 + Math.random() * 250);
+        const w = 6 + Math.random() * 10;
+        const h = 4 + Math.random() * 8;
+        const dur = 0.9 + Math.random() * 0.8;
+        const delay = Math.random() * 0.3;
+        const rot = -720 + Math.random() * 1440;
+        const radius = Math.random() > 0.5 ? '50%' : '2px';
+        p.style.cssText = `
+            left:${x}px; top:${y}px;
+            --tx:${tx}px; --ty:${ty}px;
+            --w:${w}px; --h:${h}px;
+            --color:${colors[Math.floor(Math.random() * colors.length)]};
+            --dur:${dur}s; --delay:${delay}s;
+            --rot:${rot}deg; --radius:${radius};
+        `;
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), (dur + delay) * 1000 + 100);
+    }
+}
+
+// ===== RECEIPT PRINT + FLY ANIMATION =====
+function buildReceiptHTML(orderItems, total, table) {
+    const now = new Date();
+    const time = now.toLocaleTimeString('sk-SK', { hour: '2-digit', minute: '2-digit' });
+    const date = now.toLocaleDateString('sk-SK');
+
+    let rows = '';
+    orderItems.forEach(item => {
+        rows += `<div class="r-row"><span>${item.qty}× ${item.name}</span><span>€${(item.price * item.qty).toFixed(2)}</span></div>`;
+    });
+
+    return `
+        <div class="r-logo">QRESTIQ</div>
+        <div class="r-table">Table #${table}</div>
+        <div style="text-align:center;font-size:9px;color:#888;">${date} · ${time}</div>
+        <div class="r-divider"></div>
+        ${rows}
+        <div class="r-divider"></div>
+        <div class="r-total"><span>TOTAL</span><span>€${total.toFixed(2)}</span></div>
+        <div class="r-divider"></div>
+        <div class="r-footer">Thank you! 👨‍🍳</div>
+        <div class="r-footer">Sending to kitchen...</div>
+    `;
+}
+
+function playReceiptAndFlyAnimation(orderItems, total, table, onDone) {
+    // Create overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'receipt-overlay';
+    overlay.innerHTML = `
+        <div class="receipt-backdrop"></div>
+        <div class="receipt-printer">
+            <div class="receipt-printer-light"></div>
+        </div>
+        <div class="receipt-paper">
+            <div class="receipt-paper-inner">${buildReceiptHTML(orderItems, total, table)}</div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+
+    // Calculate receipt height based on items
+    const lineHeight = 18;
+    const baseHeight = 170;
+    const receiptHeight = baseHeight + (orderItems.length * lineHeight);
+    overlay.querySelector('.receipt-paper').style.setProperty('--receipt-target-height', receiptHeight + 'px');
+
+    // Phase 1: printer slides in + paper grows
+    requestAnimationFrame(() => {
+        overlay.classList.add('active');
+    });
+
+    // Phase 2: receipt paper lines print with sound-like visual pulse
+    const paperInner = overlay.querySelector('.receipt-paper-inner');
+    const rows = paperInner.querySelectorAll('.r-row');
+    rows.forEach((row, i) => {
+        row.style.opacity = '0';
+        row.style.transform = 'translateY(4px)';
+        setTimeout(() => {
+            row.style.transition = 'opacity 0.2s ease, transform 0.2s var(--spring-ease)';
+            row.style.opacity = '1';
+            row.style.transform = 'translateY(0)';
+            // Tiny paper wobble each line
+            overlay.querySelector('.receipt-paper').style.transform = 'translateX(-50%) rotate(' + (Math.random() * 0.6 - 0.3) + 'deg)';
+            setTimeout(() => {
+                overlay.querySelector('.receipt-paper').style.transition = 'transform 0.15s var(--spring-ease)';
+                overlay.querySelector('.receipt-paper').style.transform = 'translateX(-50%) rotate(0deg)';
+            }, 60);
+        }, 800 + i * 80);
+    });
+
+    // Phase 3: paper tears off and flies to top-right (kitchen)
+    const flyDelay = 1000 + orderItems.length * 80 + 400;
+
+    setTimeout(() => {
+        const paperEl = overlay.querySelector('.receipt-paper');
+        const paperRect = paperEl.getBoundingClientRect();
+
+        // Create flying receipt
+        const flyEl = document.createElement('div');
+        flyEl.className = 'receipt-fly';
+        flyEl.style.cssText = `
+            left: ${paperRect.left + paperRect.width / 2 - 35}px;
+            top: ${paperRect.top + 20}px;
+        `;
+        document.body.appendChild(flyEl);
+
+        // Fade out original receipt paper
+        paperEl.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+        paperEl.style.opacity = '0';
+        paperEl.style.transform = 'translateX(-50%) scale(0.9)';
+
+        // Animate fly el to top of screen
+        flyEl.style.animation = 'flyToKitchen 1.1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards';
+
+        // Sparks at paper tear
+        fireSparks(paperRect.left + paperRect.width / 2, paperRect.top, 12);
+
+        // Kitchen flash at top
+        setTimeout(() => {
+            const flash = document.createElement('div');
+            flash.className = 'kitchen-flash';
+            document.body.appendChild(flash);
+            flash.style.animation = 'kitchenFlash 0.8s ease forwards';
+
+            // Big confetti burst!
+            fireConfettiPieces(window.innerWidth / 2, 60, 60);
+            fireSparks(window.innerWidth / 2, 60, 25);
+
+            setTimeout(() => flash.remove(), 800);
+            setTimeout(() => flyEl.remove(), 1200);
+        }, 700);
+
+        // Dismiss overlay
+        setTimeout(() => {
+            overlay.classList.remove('active');
+            setTimeout(() => overlay.remove(), 500);
+            onDone();
+        }, 1100);
+    }, flyDelay);
+}
+
 submitBtn.onclick = async () => {
     if (!tableNumber) {
         tableInput.focus();
@@ -418,13 +594,21 @@ submitBtn.onclick = async () => {
         errorEl.style.display = 'block';
         errorEl.innerText = 'Please enter a valid table number before submitting.';
         cartEl.querySelector('.cart-main').scrollTo({ top: 0, behavior: 'smooth' });
+        // Shake the submit button
+        submitBtn.classList.remove('shake-error');
+        void submitBtn.offsetWidth;
+        submitBtn.classList.add('shake-error');
+        setTimeout(() => submitBtn.classList.remove('shake-error'), 500);
         return;
     }
+
+    const orderItems = Object.values(cart);
+    let total = orderItems.reduce((sum, i) => sum + i.price * i.qty, 0);
 
     const orderBody = {
         tableNumber: tableNumber,
         note: noteEl.value.trim(),
-        items: Object.values(cart).map(i => ({
+        items: orderItems.map(i => ({
             menuItemId: i.id,
             quantity: i.qty,
         })),
@@ -451,6 +635,7 @@ submitBtn.onclick = async () => {
 
         const order = await res.json();
 
+        // Phase 1: loading → success circle
         submitBtn.classList.remove('is-loading');
         submitBtn.classList.add('is-success-circle');
         submitBtn.innerHTML = `
@@ -459,26 +644,34 @@ submitBtn.onclick = async () => {
             </svg>
         `;
 
+        // Small spark burst on button
+        const btnRect = submitBtn.getBoundingClientRect();
+        fireSparks(btnRect.left + btnRect.width / 2, btnRect.top + btnRect.height / 2, 14);
         fireConfetti(submitBtn);
 
+        // Phase 2: success full text
         setTimeout(() => {
             submitBtn.classList.remove('is-success-circle');
             submitBtn.classList.add('is-success-full');
-            submitBtn.innerHTML = `<span class="btn-text success-text">Sent to Kitchen! 👨‍🍳</span>`;
+            submitBtn.innerHTML = `<span class="btn-text success-text">Printing receipt... 🖨️</span>`;
         }, 800);
 
+        // Phase 3: EPIC receipt print + fly animation
         setTimeout(() => {
-            cart = {};
-            noteEl.value = '';
-            toggleCart(false);
+            playReceiptAndFlyAnimation(orderItems, total, tableNumber, () => {
+                // After animation, clear cart and close
+                cart = {};
+                noteEl.value = '';
+                toggleCart(false);
 
-            setTimeout(() => {
-                submitBtn.classList.remove('is-success-full');
-                updateCart();
-            }, 400);
+                setTimeout(() => {
+                    submitBtn.classList.remove('is-success-full');
+                    updateCart();
+                }, 400);
 
-            showToast(`Objednávka #${order.id || ''} bola odoslaná!`, 'success');
-        }, 2200);
+                showToast(`Order #${order.id || ''} sent to kitchen! 👨‍🍳`, 'success');
+            });
+        }, 1000);
 
     } catch (err) {
         console.error('Submit error:', err);
