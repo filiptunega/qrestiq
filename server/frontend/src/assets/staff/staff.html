@@ -41,33 +41,137 @@
             <div class="header-left">
                <img src="../img/logo.png" width="60px"/>
                 <div>
-                    <h1>Staff Dashboard</h1>
-                    <p>Manage and track all incoming orders</p>
+                    <h1 id="pageTitle">Staff Dashboard</h1>
+                    <p id="pageSubtitle">Manage and track all incoming orders</p>
                 </div>
             </div>
 
             <div class="header-right">
-                <button class="btn btn-clear">🗑 Clear All</button>
+                <button class="btn btn-clear" id="clearAllBtn">🗑 Clear All</button>
             </div>
         </header>
 
-        <nav class="tabs">
-            <button class="tab all" data-status="all">All Orders (0)</button>
-            <button class="tab pending" data-status="pending">Pending (0)</button>
-            <button class="tab preparing" data-status="preparing">Preparing (0)</button>
-            <button class="tab ready" data-status="ready">Ready (0)</button>
-            <button class="tab delivered" data-status="delivered">Delivered (0)</button>
+        <nav class="main-tabs">
+            <button class="main-tab active" data-view="orders">📋 Orders</button>
+            <button class="main-tab" data-view="menu">🍽 Menu</button>
         </nav>
 
     </div>
 </div>
 
-<main class="container">
-    <div class="content">
-        <div class="orders">
+<!-- ORDERS VIEW -->
+<div id="ordersView">
+    <div class="top-bar-sub">
+        <div class="top-bar-inner">
+            <nav class="tabs">
+                <button class="tab all active" data-status="all">All Orders (0)</button>
+                <button class="tab pending" data-status="pending">Pending (0)</button>
+                <button class="tab preparing" data-status="preparing">Preparing (0)</button>
+                <button class="tab ready" data-status="ready">Ready (0)</button>
+                <button class="tab delivered" data-status="delivered">Delivered (0)</button>
+            </nav>
+        </div>
+    </div>
+
+    <main class="container">
+        <div class="content">
+            <div class="orders"></div>
+        </div>
+    </main>
+</div>
+
+<!-- MENU VIEW -->
+<div id="menuView" style="display:none">
+    <main class="container">
+        <div class="menu-manager">
+
+            <div class="menu-toolbar">
+                <div class="menu-toolbar-left">
+                    <select id="menuCategoryFilter">
+                        <option value="">All Categories</option>
+                    </select>
+                    <label class="toggle-inactive">
+                        <input type="checkbox" id="showInactive"> Show inactive
+                    </label>
+                </div>
+                <button class="btn btn-add" id="addMenuItemBtn">+ Add Item</button>
+            </div>
+
+            <div id="menuItemsGrid" class="menu-items-grid"></div>
 
         </div>
-        
+    </main>
+</div>
+
+<!-- MENU ITEM MODAL -->
+<div class="modal-overlay" id="menuModal" style="display:none">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 id="modalTitle">Add Menu Item</h3>
+            <button class="modal-close" id="modalClose">✕</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="editItemId">
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Name *</label>
+                    <input type="text" id="itemName" placeholder="e.g. Margherita Pizza">
+                </div>
+                <div class="form-group">
+                    <label>Category *</label>
+                    <input type="text" id="itemCategory" placeholder="e.g. Pizza" list="categoryDatalist">
+                    <datalist id="categoryDatalist"></datalist>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="itemDescription" rows="2" placeholder="Short description..."></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Price (€) *</label>
+                    <input type="number" id="itemPrice" min="0" step="0.01" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label>Sort Order</label>
+                    <input type="number" id="itemSortOrder" min="0" placeholder="0">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Image URL</label>
+                <input type="text" id="itemImgUrl" placeholder="https://...">
+            </div>
+
+            <div class="form-group form-check">
+                <label>
+                    <input type="checkbox" id="itemIsActive" checked>
+                    Active (visible to customers)
+                </label>
+            </div>
+
+            <p class="form-error" id="formError"></p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="modalCancel">Cancel</button>
+            <button class="btn btn-save" id="modalSave">Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- DELETE CONFIRM MODAL -->
+<div class="modal-overlay" id="deleteModal" style="display:none">
+    <div class="modal modal-small">
+        <div class="modal-body" style="text-align:center; padding: 32px 24px;">
+            <p style="font-size:16px; font-weight:500; margin-bottom:24px;">Delete this menu item?</p>
+            <div style="display:flex; gap:12px; justify-content:center;">
+                <button class="btn btn-secondary" id="deleteCancelBtn">Cancel</button>
+                <button class="btn btn-danger" id="deleteConfirmBtn">Delete</button>
+            </div>
+        </div>
     </div>
 </div>
 

@@ -38,9 +38,13 @@ export class MenuView {
             id:          item.id,
             category:    item.category,
             name:        item.name,
-            desc:        item.description,
+            description: item.description,
             price:       item.price,
-            img:         item.imgUrl,
+            imgUrl:      item.imgUrl,
+            isActive:    item.isActive,
+            sortOrder:   item.sortOrder,
+            createdAt:   item.createdAt,
+            updatedAt:   item.updatedAt,
         };
     }
 }
