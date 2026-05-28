@@ -3,11 +3,27 @@
  */
 export class TableView {
     static list(res, tables) {
-        res.json(tables.map(TableView.#format));
+        res.json(tables.map(TableView.#formatPublic));
     }
 
-    static #format(t) {
+    static listAdmin(res, tables) {
+        res.json(tables.map(TableView.#formatAdmin));
+    }
+
+    static single(res, table) {
+        res.json(TableView.#formatAdmin(table));
+    }
+
+    static created(res, table) {
+        res.status(201).json(TableView.#formatAdmin(table));
+    }
+
+    static #formatPublic(t) {
         return { id: t.id, number: t.number };
+    }
+
+    static #formatAdmin(t) {
+        return { id: t.id, number: t.number, isActive: t.isActive, createdAt: t.createdAt };
     }
 }
 

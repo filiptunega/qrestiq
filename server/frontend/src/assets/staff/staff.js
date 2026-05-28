@@ -20,6 +20,7 @@ const deliveredTab  = document.querySelector('.tab.delivered');
 // Views
 const ordersView    = document.getElementById('ordersView');
 const menuView      = document.getElementById('menuView');
+const tablesView    = document.getElementById('tablesView');
 const mainTabs      = document.querySelectorAll('.main-tab');
 
 // Menu manager
@@ -85,19 +86,30 @@ mainTabs.forEach(tab => {
         if (view === 'orders') {
             ordersView.style.display = '';
             menuView.style.display = 'none';
+            tablesView.style.display = 'none';
             clearAllBtn.style.display = '';
             pageTitle.textContent = 'Staff Dashboard';
             pageSubtitle.textContent = 'Manage and track all incoming orders';
             loadAndRender();
             startPolling();
-        } else {
+        } else if (view === 'menu') {
             ordersView.style.display = 'none';
             menuView.style.display = '';
+            tablesView.style.display = 'none';
             clearAllBtn.style.display = 'none';
             pageTitle.textContent = 'Menu Manager';
             pageSubtitle.textContent = 'Add, edit or remove menu items';
             stopPolling();
             loadMenuItems();
+        } else if (view === 'tables') {
+            ordersView.style.display = 'none';
+            menuView.style.display = 'none';
+            tablesView.style.display = '';
+            clearAllBtn.style.display = 'none';
+            pageTitle.textContent = 'Table Manager';
+            pageSubtitle.textContent = 'Add, edit or deactivate restaurant tables';
+            stopPolling();
+            loadTables();
         }
     });
 });
@@ -623,3 +635,218 @@ deleteConfirmBtn.addEventListener('click', async () => {
 // ===== MENU FILTERS =====
 menuCategoryFilter.addEventListener('change', renderMenuItems);
 showInactiveCheck.addEventListener('change', renderMenuItems);
+
+
+// ============================================================
+// ===== TABLES MANAGER =====
+// ============================================================
+
+// DOM refs — tables
+const tablesGrid            = document.getElementById('tablesGrid');
+const addTableBtn           = document.getElementById('addTableBtn');
+const showInactiveTablesChk = document.getElementById('showInactiveTables');
+
+// Table modal
+const tableModal        = document.getElementById('tableModal');
+const tableModalTitle   = document.getElementById('tableModalTitle');
+const tableModalClose   = document.getElementById('tableModalClose');
+const tableModalCancel  = document.getElementById('tableModalCancel');
+const tableModalSave    = document.getElementById('tableModalSave');
+const tableFormError    = document.getElementById('tableFormError');
+const editTableId       = document.getElementById('editTableId');
+const tableNumber       = document.getElementById('tableNumber');
+const tableIsActive     = document.getElementById('tableIsActive');
+const tableActiveGroup  = document.getElementById('tableActiveGroup');
+
+// Delete modal
+const deleteTableModal      = document.getElementById('deleteTableModal');
+const deleteTableCancelBtn  = document.getElementById('deleteTableCancelBtn');
+const deleteTableConfirmBtn = document.getElementById('deleteTableConfirmBtn');
+
+let allTables       = [];
+let pendingDeleteTableId = null;
+
+async function loadTables() {
+    try {
+        const res = await fetch(`${API}/tables/all`, { headers: authHeaders() });
+        if (res.status === 401) { logout(); return; }
+        if (!res.ok) throw new Error('Failed to load tables');
+        allTables = await res.json();
+        renderTables();
+    } catch (err) {
+        console.error(err);
+        tablesGrid.innerHTML = `<p style="color:#dc2626; padding:16px;">Nepodarilo sa načítať stoly.</p>`;
+    }
+}
+
+function renderTables() {
+    const showInactive = showInactiveTablesChk.checked;
+    const items = showInactive ? allTables : allTables.filter(t => t.isActive);
+
+    tablesGrid.innerHTML = '';
+
+    if (items.length === 0) {
+        tablesGrid.innerHTML = `
+            <div class="menu-empty">
+                <div class="icon">🪑</div>
+                <h2>No tables found</h2>
+                <p>Try enabling "Show inactive" or add a new table.</p>
+            </div>`;
+        return;
+    }
+
+    items.forEach(table => {
+        const card = document.createElement('div');
+        card.className = `table-card${table.isActive ? '' : ' table-card--inactive'}`;
+        card.innerHTML = `
+            <div class="table-card-number">🪑 Table ${table.number}</div>
+            <div class="table-card-meta">
+                <span class="menu-badge ${table.isActive ? 'badge-active' : 'badge-inactive'}">
+                    ${table.isActive ? 'Active' : 'Inactive'}
+                </span>
+            </div>
+            <div class="table-card-actions">
+                <button class="btn btn-edit" data-table-id="${table.id}">✏️ Edit</button>
+                <button class="btn btn-toggle ${table.isActive ? 'btn-deactivate' : 'btn-activate'}"
+                        data-table-id="${table.id}" data-active="${table.isActive}">
+                    ${table.isActive ? '🔴 Deactivate' : '🟢 Activate'}
+                </button>
+                <button class="btn btn-danger-sm" data-table-delete-id="${table.id}">🗑</button>
+            </div>
+        `;
+        tablesGrid.appendChild(card);
+    });
+}
+
+// Event delegation on tablesGrid
+tablesGrid.addEventListener('click', async (e) => {
+    const editBtn   = e.target.closest('[data-table-id].btn-edit');
+    const toggleBtn = e.target.closest('.btn-toggle[data-table-id]');
+    const deleteBtn = e.target.closest('[data-table-delete-id]');
+
+    if (editBtn) {
+        openEditTableModal(Number(editBtn.dataset.tableId));
+    } else if (toggleBtn) {
+        const id       = Number(toggleBtn.dataset.tableId);
+        const isActive = toggleBtn.dataset.active === 'true';
+        await quickToggleTable(id, !isActive);
+    } else if (deleteBtn) {
+        openDeleteTableConfirm(Number(deleteBtn.dataset.tableDeleteId));
+    }
+});
+
+async function quickToggleTable(id, isActive) {
+    try {
+        const res = await fetch(`${API}/tables/${id}`, {
+            method: 'PUT',
+            headers: authHeaders(),
+            body: JSON.stringify({ isActive }),
+        });
+        if (res.status === 401) { logout(); return; }
+        if (!res.ok) throw new Error('Toggle failed');
+        await loadTables();
+    } catch (err) {
+        console.error(err);
+        alert('Nepodarilo sa zmeniť stav stola.');
+    }
+}
+
+// ===== TABLE MODAL =====
+function openAddTableModal() {
+    editTableId.value     = '';
+    tableNumber.value     = '';
+    tableIsActive.checked = true;
+    tableActiveGroup.style.display = 'none';
+    tableFormError.textContent = '';
+    tableModalTitle.textContent = 'Add Table';
+    tableModal.style.display = 'flex';
+    tableNumber.focus();
+}
+
+function openEditTableModal(id) {
+    const table = allTables.find(t => Number(t.id) === id);
+    if (!table) return;
+    editTableId.value     = table.id;
+    tableNumber.value     = table.number;
+    tableIsActive.checked = table.isActive;
+    tableActiveGroup.style.display = '';
+    tableFormError.textContent = '';
+    tableModalTitle.textContent = 'Edit Table';
+    tableModal.style.display = 'flex';
+    tableNumber.focus();
+}
+
+function closeTableModal() {
+    tableModal.style.display = 'none';
+}
+
+addTableBtn.addEventListener('click', openAddTableModal);
+tableModalClose.addEventListener('click', closeTableModal);
+tableModalCancel.addEventListener('click', closeTableModal);
+tableModal.addEventListener('click', e => { if (e.target === tableModal) closeTableModal(); });
+
+tableModalSave.addEventListener('click', async () => {
+    const id  = editTableId.value ? Number(editTableId.value) : null;
+    const num = parseInt(tableNumber.value);
+
+    tableFormError.textContent = '';
+    if (!num || num < 1) { tableFormError.textContent = 'Table number must be a positive integer.'; return; }
+
+    const payload = id
+        ? { number: num, isActive: tableIsActive.checked }
+        : { number: num };
+
+    tableModalSave.disabled = true;
+    try {
+        const url    = id ? `${API}/tables/${id}` : `${API}/tables`;
+        const method = id ? 'PUT' : 'POST';
+        const res    = await fetch(url, { method, headers: authHeaders(), body: JSON.stringify(payload) });
+
+        if (res.status === 401) { logout(); return; }
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            tableFormError.textContent = err.message ?? 'Save failed.';
+            return;
+        }
+        closeTableModal();
+        await loadTables();
+    } catch {
+        tableFormError.textContent = 'Network error.';
+    } finally {
+        tableModalSave.disabled = false;
+    }
+});
+
+// ===== DELETE TABLE =====
+function openDeleteTableConfirm(id) {
+    pendingDeleteTableId = id;
+    deleteTableModal.style.display = 'flex';
+}
+
+function closeDeleteTableModal() {
+    deleteTableModal.style.display = 'none';
+    pendingDeleteTableId = null;
+}
+
+deleteTableCancelBtn.addEventListener('click', closeDeleteTableModal);
+deleteTableModal.addEventListener('click', e => { if (e.target === deleteTableModal) closeDeleteTableModal(); });
+
+deleteTableConfirmBtn.addEventListener('click', async () => {
+    if (!pendingDeleteTableId) return;
+    deleteTableConfirmBtn.disabled = true;
+    try {
+        const res = await fetch(`${API}/tables/${pendingDeleteTableId}`, {
+            method: 'DELETE', headers: authHeaders(),
+        });
+        if (res.status === 401) { logout(); return; }
+        if (!res.ok) throw new Error('Delete failed');
+        closeDeleteTableModal();
+        await loadTables();
+    } catch {
+        alert('Delete failed. Please try again.');
+    } finally {
+        deleteTableConfirmBtn.disabled = false;
+    }
+});
+
+showInactiveTablesChk.addEventListener('change', renderTables);
