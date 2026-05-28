@@ -19,8 +19,6 @@ Qrestiq is a modern restaurant ordering platform that provides a seamless experi
 ### Customer App
 - Browse restaurant menus
 - Place and track orders
-- User authentication and account management
-- Order history
 
 ### Staff App
 - Manage incoming orders
@@ -48,6 +46,3 @@ Qrestiq is a modern restaurant ordering platform that provides a seamless experi
 - **Authentication**: JWT (jsonwebtoken)
 - **Security**: bcrypt
 - **Development**: Nodemon (hot reload)
-
-
-## 📦 Project Structure
