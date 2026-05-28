@@ -9,7 +9,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Inter";
+    font-family: "Inter", sans-serif;
 }
 
 body {
@@ -38,10 +38,15 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
 }
 
 .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.header-right {
     display: flex;
     align-items: center;
     gap: 16px;
@@ -74,8 +79,7 @@ body {
 .tabs {
     display: flex;
     gap: 10px;
-    margin-bottom: 24px;
-    /* Plynulý scroll pre mobily */
+    margin-bottom: 0;
     overflow-x: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -93,7 +97,6 @@ body {
     border: none;
     font-weight: 500;
     white-space: nowrap;
-    /* Zabraňuje zalomeniu textu */
 }
 
 .tab.all {
@@ -168,7 +171,6 @@ body {
 }
 
 .order-card {
-    /* Upravené pre lepšie škálovanie */
     width: 100%;
     max-width: 350px;
     background-color: var(--white);
@@ -245,6 +247,16 @@ body {
     margin: 12px 0;
 }
 
+.order-note {
+    font-size: 13px;
+    color: #b91c1c;
+    background-color: #fee2e2;
+    padding: 8px;
+    border-radius: 8px;
+    margin-top: 10px;
+    font-weight: 500;
+}
+
 .btn-primary {
     width: 100%;
     color: white;
@@ -277,7 +289,6 @@ body {
     cursor: pointer;
 }
 
-/* PopUp a Login zostávajú nezmenené */
 .popUp-overlay {
     position: fixed;
     top: 0;
@@ -412,43 +423,11 @@ body {
     text-decoration: underline;
 }
 
-
-/* ===== RESPONSIVE DIZAJN PRE MOBILY ===== */
-@media (max-width: 768px) {
-
-    .container,
-    .top-bar-inner {
-        padding: 16px;
-    }
-
-    .header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 16px;
-    }
-
-    .header-right {
-        width: 100%;
-    }
-
-    .btn-clear {
-        width: 100%;
-    }
-
-    .content {
-        padding: 32px 16px;
-    }
-
-    .order-card {
-        max-width: 100%;
-        /* Na mobile zaberie plnú šírku */
-    }
-}
 /* ===== MAIN TABS (Orders / Menu) ===== */
 .main-tabs {
     display: flex;
     gap: 8px;
-    margin-top: 4px;
+    margin-top: 0;
 }
 
 .main-tab {
@@ -471,6 +450,13 @@ body {
 .top-bar-sub {
     background-color: var(--white);
     border-bottom: 1px solid rgba(123, 138, 152, 0.2);
+}
+
+.sub-bar-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
 }
 
 /* ===== MENU MANAGER ===== */
@@ -529,10 +515,13 @@ body {
     white-space: nowrap;
 }
 
-.btn-add:hover { opacity: 0.9; }
+.btn-add:hover {
+    opacity: 0.9;
+}
 
-/* ===== MENU CATEGORY SECTIONS ===== */
-.menu-category-section { margin-bottom: 32px; }
+.menu-category-section {
+    margin-bottom: 32px;
+}
 
 .menu-category-title {
     font-size: 16px;
@@ -540,7 +529,7 @@ body {
     color: var(--primary);
     margin-bottom: 14px;
     padding-bottom: 8px;
-    border-bottom: 2px solid rgba(123,138,152,0.2);
+    border-bottom: 2px solid rgba(123, 138, 152, 0.2);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
@@ -551,19 +540,20 @@ body {
     gap: 16px;
 }
 
-/* ===== MENU CARD ===== */
 .menu-card {
     width: 280px;
     flex-grow: 1;
     max-width: 340px;
-    border: 1px solid rgba(123,138,152,0.25);
+    border: 1px solid rgba(123, 138, 152, 0.25);
     border-radius: 12px;
     overflow: hidden;
     background: var(--white);
     transition: box-shadow 0.15s;
 }
 
-.menu-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.08); }
+.menu-card:hover {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
 
 .menu-card--inactive {
     opacity: 0.6;
@@ -577,7 +567,9 @@ body {
     display: block;
 }
 
-.menu-card-body { padding: 14px; }
+.menu-card-body {
+    padding: 14px;
+}
 
 .menu-card-header {
     display: flex;
@@ -626,8 +618,15 @@ body {
     border-radius: 20px;
 }
 
-.badge-active   { background-color: #dcfce7; color: #166534; }
-.badge-inactive { background-color: #f3f4f6; color: #6b7280; }
+.badge-active {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.badge-inactive {
+    background-color: #f3f4f6;
+    color: #6b7280;
+}
 
 .menu-card-actions {
     display: flex;
@@ -646,7 +645,9 @@ body {
     cursor: pointer;
 }
 
-.btn-edit:hover { background-color: #dbeafe; }
+.btn-edit:hover {
+    background-color: #dbeafe;
+}
 
 .btn-danger-sm {
     background-color: #fef2f2;
@@ -658,7 +659,9 @@ body {
     cursor: pointer;
 }
 
-.btn-danger-sm:hover { background-color: #fee2e2; }
+.btn-danger-sm:hover {
+    background-color: #fee2e2;
+}
 
 .menu-empty {
     text-align: center;
@@ -678,7 +681,6 @@ body {
     margin: 0 auto 16px;
 }
 
-
 /* ===== MODAL ===== */
 .modal-overlay {
     position: fixed;
@@ -696,18 +698,20 @@ body {
     border-radius: 14px;
     width: 100%;
     max-width: 540px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
     overflow: hidden;
 }
 
-.modal-small { max-width: 380px; }
+.modal-small {
+    max-width: 380px;
+}
 
 .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 20px 24px;
-    border-bottom: 1px solid rgba(123,138,152,0.2);
+    border-bottom: 1px solid rgba(123, 138, 152, 0.2);
 }
 
 .modal-header h3 {
@@ -725,23 +729,26 @@ body {
     padding: 4px;
 }
 
-.modal-body { padding: 24px; }
+.modal-body {
+    padding: 24px;
+}
 
 .modal-footer {
     display: flex;
     justify-content: flex-end;
     gap: 12px;
     padding: 16px 24px;
-    border-top: 1px solid rgba(123,138,152,0.2);
+    border-top: 1px solid rgba(123, 138, 152, 0.2);
 }
 
-/* Form elements */
 .form-row {
     display: flex;
     gap: 16px;
 }
 
-.form-row .form-group { flex: 1; }
+.form-row .form-group {
+    flex: 1;
+}
 
 .form-group {
     margin-bottom: 14px;
@@ -793,6 +800,11 @@ body {
     background-color: var(--bg-cl);
     color: var(--primary);
     border: 1px solid #d1d5db;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
 }
 
 .btn-save {
@@ -806,8 +818,14 @@ body {
     cursor: pointer;
 }
 
-.btn-save:hover { opacity: 0.9; }
-.btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-save:hover {
+    opacity: 0.9;
+}
+
+.btn-save:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
 
 .btn-danger {
     background-color: #dc2626;
@@ -820,17 +838,67 @@ body {
     cursor: pointer;
 }
 
-.btn-secondary {
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
+/* ===== RESPONSIVE DIZAJN PRE MOBILY ===== */
+@media (max-width: 768px) {
+
+    .container,
+    .top-bar-inner {
+        padding: 16px;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .header-right {
+        width: 100%;
+    }
+
+    .main-tabs {
+        width: 100%;
+    }
+
+    .main-tab {
+        flex: 1;
+        text-align: center;
+    }
+
+    .sub-bar-inner {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .tabs {
+        width: 100%;
+    }
+
+    .btn-clear {
+        width: 100%;
+    }
+
+    .content {
+        padding: 32px 16px;
+    }
+
+    .order-card {
+        max-width: 100%;
+    }
 }
 
-/* Responsive */
 @media (max-width: 600px) {
-    .form-row { flex-direction: column; }
-    .menu-card { max-width: 100%; }
-    .main-tab { padding: 8px 14px; font-size: 13px; }
+    .form-row {
+        flex-direction: column;
+    }
+
+    .menu-card {
+        max-width: 100%;
+    }
+
+    .main-tab {
+        padding: 8px 14px;
+        font-size: 13px;
+    }
 }
