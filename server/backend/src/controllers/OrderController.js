@@ -1,21 +1,22 @@
-import { OrderService }   from '../models/OrderService.js';
-import { TableService }   from '../models/TableService.js';
-import { MenuService }    from '../models/MenuService.js';
-import { OrderFilter }    from '../filters/OrderFilter.js';
+import { OrderService } from '../models/OrderService.js';
+import { TableService } from '../models/TableService.js';
+import { MenuService } from '../models/MenuService.js';
+import { OrderFilter } from '../filters/OrderFilter.js';
 import { OrderValidator } from '../validators/OrderValidator.js';
-import { OrderView }      from '../views/QrestiqViews.js';
+import { OrderView } from '../views/QrestiqViews.js';
 
 const orderService = new OrderService();
 const tableService = new TableService();
-const menuService  = new MenuService();
+const menuService = new MenuService();
 
 /**
  * OrderController
  *
- * GET    /api/orders          — všetky objednávky (voliteľne ?status=pending)
- * GET    /api/orders/:id      — jedna objednávka
- * POST   /api/orders          — vytvor objednávku
- * PATCH  /api/orders/:id/status — zmeň status
+ * GET    /api/orders              — všetky objednávky (voliteľne ?status=pending)  [auth]
+ * GET    /api/orders/:id          — jedna objednávka                               [auth]
+ * GET    /api/orders/track/:id    — sledovanie stavu objednávky zákazníkom          [public]
+ * POST   /api/orders              — vytvor objednávku                              [public]
+ * PATCH  /api/orders/:id/status   — zmeň status                                   [auth]
  */
 export class OrderController {
 
@@ -34,6 +35,26 @@ export class OrderController {
             const order = await orderService.findById(Number(req.params.id));
             if (!order) return OrderView.notFound(res);
             OrderView.single(res, order);
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    /**
+     * GET /api/orders/track/:id
+     *
+     * Verejný endpoint — zákazník vidí len obmedzené informácie o svojej objednávke:
+     * stav, stôl, položky a celkovú sumu. Bez citlivých interných dát.
+     */
+    async track(req, res, next) {
+        try {
+            const id = Number(req.params.id);
+            if (!id || id <= 0) return OrderView.notFound(res);
+
+            const order = await orderService.findById(id);
+            if (!order) return OrderView.notFound(res);
+
+            OrderView.tracked(res, order);
         } catch (err) {
             next(err);
         }
@@ -76,17 +97,17 @@ export class OrderController {
                 }
                 enrichedItems.push({
                     menuItemId: menuItem.id,
-                    name:       menuItem.name,
-                    price:      menuItem.price,
-                    quantity:   Number(rawItem.quantity),
+                    name: menuItem.name,
+                    price: menuItem.price,
+                    quantity: Number(rawItem.quantity),
                 });
             }
 
             // 5. Uloženie
             const order = await orderService.create({
                 tableId: table.id,
-                note:    data.note,
-                items:   enrichedItems,
+                note: data.note,
+                items: enrichedItems,
             });
 
             // 6. Odpoveď
@@ -103,7 +124,7 @@ export class OrderController {
      */
     async updateStatus(req, res, next) {
         try {
-            const data   = OrderFilter.forStatusUpdate(req.body);
+            const data = OrderFilter.forStatusUpdate(req.body);
             const errors = OrderValidator.forStatusUpdate(data);
             if (errors.length) return OrderView.validationError(res, errors);
 

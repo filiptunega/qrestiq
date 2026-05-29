@@ -346,13 +346,14 @@ function initScrollSpy() {
 
 // ===== KOŠÍK LOGIKA =====
 function addToCart(item) {
+    const isNew = !cart[item.id];
     cart[item.id] = cart[item.id]
         ? { ...cart[item.id], qty: cart[item.id].qty + 1 }
         : { ...item, qty: 1 };
-    updateCart();
+    updateCart(isNew);
 }
 
-function updateCart() {
+function updateCart(isNew = false) {
     cartItemsEl.innerHTML = '';
     let total = 0;
     let itemCount = 0;
@@ -362,7 +363,7 @@ function updateCart() {
         itemCount += i.qty;
 
         const row = document.createElement('div');
-        row.className = 'cart-item';
+        row.className = isNew ? 'cart-item' : 'cart-item no-anim';
         row.innerHTML = `
             <div class="cart-item-details">
                 <strong>${i.name}</strong>
@@ -401,13 +402,15 @@ function updateCart() {
 
         if (cartCountEl.innerText !== String(itemCount)) {
             cartCountEl.innerText = itemCount;
-            cartCountEl.classList.remove('pop-bounce');
-            void cartCountEl.offsetWidth;
-            cartCountEl.classList.add('pop-bounce');
+            if (isNew) {
+                cartCountEl.classList.remove('pop-bounce');
+                void cartCountEl.offsetWidth;
+                cartCountEl.classList.add('pop-bounce');
 
-            openCartBtn.classList.remove('jello-click');
-            void openCartBtn.offsetWidth;
-            openCartBtn.classList.add('jello-click');
+                openCartBtn.classList.remove('jello-click');
+                void openCartBtn.offsetWidth;
+                openCartBtn.classList.add('jello-click');
+            }
         }
     } else {
         openCartBtn.style.display = 'none';
@@ -718,6 +721,11 @@ submitBtn.onclick = async () => {
                 }, 400);
 
                 showToast(`Order #${order.id || ''} sent to kitchen! 👨‍🍳`, 'success');
+
+                // Show persistent "Track your order" banner
+                if (order.id) {
+                    showTrackBanner(order.id);
+                }
             });
         }, 1000);
 
@@ -728,3 +736,153 @@ submitBtn.onclick = async () => {
         submitBtn.disabled = false;
     }
 };
+
+// ===== TRACK ORDER BANNER =====
+/**
+ * Shows a persistent banner after a successful order submission
+ * so the customer can easily navigate to the order tracking page.
+ */
+function showTrackBanner(orderId) {
+    // Remove any existing banner
+    const existing = document.getElementById('trackOrderBanner');
+    if (existing) existing.remove();
+
+    const banner = document.createElement('div');
+    banner.id = 'trackOrderBanner';
+    banner.innerHTML = `
+        <div class="track-banner-inner">
+            <div class="track-banner-left">
+                <div class="track-banner-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>
+                </div>
+                <div class="track-banner-text">
+                    <strong>Order #${orderId} placed!</strong>
+                    <span>Track your order status in real time</span>
+                </div>
+            </div>
+            <div class="track-banner-actions">
+                <a href="/track.html?id=${orderId}" class="track-banner-btn" target="_blank">
+                    Track Order
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+                <button class="track-banner-close" onclick="document.getElementById('trackOrderBanner').remove()" aria-label="Close">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    `;
+
+    // Inject styles once
+    if (!document.getElementById('trackBannerStyles')) {
+        const style = document.createElement('style');
+        style.id = 'trackBannerStyles';
+        style.textContent = `
+            #trackOrderBanner {
+                position: fixed;
+                bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+                left: 50%;
+                transform: translateX(-50%) translateY(24px);
+                z-index: 9999;
+                width: calc(100% - 32px);
+                max-width: 480px;
+                opacity: 0;
+                transition: opacity 0.4s cubic-bezier(0.34,1.56,0.64,1), transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+                font-family: 'Inter', sans-serif;
+            }
+            #trackOrderBanner.visible {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+            .track-banner-inner {
+                background: #ffffff;
+                border: 1px solid rgba(11,41,64,0.1);
+                border-radius: 16px;
+                padding: 14px 16px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+                box-shadow: 0 12px 40px rgba(11,41,64,0.14), 0 2px 8px rgba(11,41,64,0.06);
+            }
+            .track-banner-left {
+                display: flex; align-items: center; gap: 12px; min-width: 0;
+            }
+            .track-banner-icon {
+                width: 40px; height: 40px; flex-shrink: 0;
+                border-radius: 12px;
+                background: rgba(11,41,64,0.06);
+                border: 1px solid rgba(11,41,64,0.08);
+                display: flex; align-items: center; justify-content: center;
+                color: #0b2940;
+            }
+            .track-banner-icon svg { width: 19px; height: 19px; }
+            .track-banner-text {
+                display: flex; flex-direction: column; gap: 2px; min-width: 0;
+            }
+            .track-banner-text strong {
+                font-size: 13px; font-weight: 700;
+                color: #0b2940;
+                white-space: nowrap;
+            }
+            .track-banner-text span {
+                font-size: 11px; color: #7b8a98;
+                white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            }
+            .track-banner-actions {
+                display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+            }
+            .track-banner-btn {
+                display: flex; align-items: center; gap: 6px;
+                background: #0b2940;
+                color: #ffffff;
+                text-decoration: none;
+                padding: 9px 15px;
+                border-radius: 999px;
+                font-size: 12px; font-weight: 700;
+                white-space: nowrap;
+                transition: background 0.2s ease, transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s ease;
+                box-shadow: 0 4px 12px rgba(11,41,64,0.2);
+            }
+            .track-banner-btn svg { width: 12px; height: 12px; }
+            .track-banner-btn:hover {
+                background: #154161;
+                transform: translateY(-1px);
+                box-shadow: 0 6px 16px rgba(11,41,64,0.28);
+            }
+            .track-banner-btn:active { transform: scale(0.95); }
+            .track-banner-close {
+                background: #f1ede8;
+                border: none; cursor: pointer;
+                color: #7b8a98;
+                padding: 0;
+                width: 32px; height: 32px;
+                border-radius: 50%;
+                display: flex; align-items: center; justify-content: center;
+                transition: background 0.2s, color 0.2s, transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+                flex-shrink: 0;
+            }
+            .track-banner-close svg { width: 13px; height: 13px; }
+            .track-banner-close:hover {
+                background: #e2dcd5;
+                color: #0b2940;
+                transform: scale(1.05) rotate(90deg);
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    document.body.appendChild(banner);
+
+    // Animate in
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            banner.classList.add('visible');
+        });
+    });
+}

@@ -51,16 +51,16 @@ export class MenuView {
 
     static #format(item) {
         return {
-            id:          item.id,
-            category:    item.category,
-            name:        item.name,
+            id: item.id,
+            category: item.category,
+            name: item.name,
             description: item.description,
-            price:       item.price,
-            imgUrl:      item.imgUrl,
-            isActive:    item.isActive,
-            sortOrder:   item.sortOrder,
-            createdAt:   item.createdAt,
-            updatedAt:   item.updatedAt,
+            price: item.price,
+            imgUrl: item.imgUrl,
+            isActive: item.isActive,
+            sortOrder: item.sortOrder,
+            createdAt: item.createdAt,
+            updatedAt: item.updatedAt,
         };
     }
 }
@@ -89,19 +89,45 @@ export class OrderView {
         res.status(422).json({ errors });
     }
 
+    /**
+     * Verejný tracking endpoint — zákazník vidí len bezpečné informácie.
+     * Neobsahuje interné IDs (table_id), iba číslo stola a verejné dáta.
+     */
+    static tracked(res, order) {
+        res.json(OrderView.#formatPublic(order));
+    }
+
     static #format(order) {
         return {
-            id:          order.id,
+            id: order.id,
             tableNumber: order.tableNumber,
-            status:      order.status,
-            note:        order.note,
-            total:       order.total,
-            createdAt:   order.createdAt,
-            items:       (order.items ?? []).map(i => ({
+            status: order.status,
+            note: order.note,
+            total: order.total,
+            createdAt: order.createdAt,
+            items: (order.items ?? []).map(i => ({
                 menuItemId: i.menuItemId,
-                name:       i.name,
-                price:      i.price,
-                quantity:   i.quantity,
+                name: i.name,
+                price: i.price,
+                quantity: i.quantity,
+            })),
+        };
+    }
+
+    /** Obmedzený formát pre zákazníka — bez interných IDs */
+    static #formatPublic(order) {
+        return {
+            id: order.id,
+            tableNumber: order.tableNumber,
+            status: order.status,
+            note: order.note,
+            total: order.total,
+            createdAt: order.createdAt,
+            updatedAt: order.updatedAt,
+            items: (order.items ?? []).map(i => ({
+                name: i.name,
+                price: i.price,
+                quantity: i.quantity,
             })),
         };
     }
