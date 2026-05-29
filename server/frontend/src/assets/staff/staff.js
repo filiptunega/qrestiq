@@ -1,61 +1,61 @@
 const API = '/api';
 
 // ===== DOM REFS =====
-const clearAllBtn       = document.getElementById('clearAllBtn');
-const loginOverlay      = document.getElementById('loginOverlay');
-const loginForm         = document.getElementById('loginForm');
-const passwordInput     = document.getElementById('passwordInput');
-const togglePassword    = document.getElementById('togglePassword');
-const ordersContainer   = document.querySelector('.orders');
-const pageTitle         = document.getElementById('pageTitle');
-const pageSubtitle      = document.getElementById('pageSubtitle');
+const clearAllBtn = document.getElementById('clearAllBtn');
+const loginOverlay = document.getElementById('loginOverlay');
+const loginForm = document.getElementById('loginForm');
+const passwordInput = document.getElementById('passwordInput');
+const togglePassword = document.getElementById('togglePassword');
+const ordersContainer = document.querySelector('.orders');
+const pageTitle = document.getElementById('pageTitle');
+const pageSubtitle = document.getElementById('pageSubtitle');
 
 // Tabs
-const allTab        = document.querySelector('.tab.all');
-const pendingTab    = document.querySelector('.tab.pending');
-const preparingTab  = document.querySelector('.tab.preparing');
-const readyTab      = document.querySelector('.tab.ready');
-const deliveredTab  = document.querySelector('.tab.delivered');
+const allTab = document.querySelector('.tab.all');
+const pendingTab = document.querySelector('.tab.pending');
+const preparingTab = document.querySelector('.tab.preparing');
+const readyTab = document.querySelector('.tab.ready');
+const deliveredTab = document.querySelector('.tab.delivered');
 
 // Views
-const ordersView    = document.getElementById('ordersView');
-const menuView      = document.getElementById('menuView');
-const tablesView    = document.getElementById('tablesView');
-const mainTabs      = document.querySelectorAll('.main-tab');
+const ordersView = document.getElementById('ordersView');
+const menuView = document.getElementById('menuView');
+const tablesView = document.getElementById('tablesView');
+const mainTabs = document.querySelectorAll('.main-tab');
 
 // Menu manager
-const menuItemsGrid      = document.getElementById('menuItemsGrid');
-const addMenuItemBtn     = document.getElementById('addMenuItemBtn');
+const menuItemsGrid = document.getElementById('menuItemsGrid');
+const addMenuItemBtn = document.getElementById('addMenuItemBtn');
 const menuCategoryFilter = document.getElementById('menuCategoryFilter');
-const showInactiveCheck  = document.getElementById('showInactive');
-const categoryDatalist   = document.getElementById('categoryDatalist');
+const showInactiveCheck = document.getElementById('showInactive');
+const categoryDatalist = document.getElementById('categoryDatalist');
 
 // Modals
-const menuModal      = document.getElementById('menuModal');
-const deleteModal    = document.getElementById('deleteModal');
-const modalTitle     = document.getElementById('modalTitle');
-const modalClose     = document.getElementById('modalClose');
-const modalCancel    = document.getElementById('modalCancel');
-const modalSave      = document.getElementById('modalSave');
-const deleteCancelBtn   = document.getElementById('deleteCancelBtn');
-const deleteConfirmBtn  = document.getElementById('deleteConfirmBtn');
-const formError      = document.getElementById('formError');
+const menuModal = document.getElementById('menuModal');
+const deleteModal = document.getElementById('deleteModal');
+const modalTitle = document.getElementById('modalTitle');
+const modalClose = document.getElementById('modalClose');
+const modalCancel = document.getElementById('modalCancel');
+const modalSave = document.getElementById('modalSave');
+const deleteCancelBtn = document.getElementById('deleteCancelBtn');
+const deleteConfirmBtn = document.getElementById('deleteConfirmBtn');
+const formError = document.getElementById('formError');
 
 // Form fields
-const editItemId      = document.getElementById('editItemId');
-const itemName        = document.getElementById('itemName');
-const itemCategory    = document.getElementById('itemCategory');
+const editItemId = document.getElementById('editItemId');
+const itemName = document.getElementById('itemName');
+const itemCategory = document.getElementById('itemCategory');
 const itemDescription = document.getElementById('itemDescription');
-const itemPrice       = document.getElementById('itemPrice');
-const itemSortOrder   = document.getElementById('itemSortOrder');
-const itemImgUrl      = document.getElementById('itemImgUrl');
-const itemIsActive    = document.getElementById('itemIsActive');
+const itemPrice = document.getElementById('itemPrice');
+const itemSortOrder = document.getElementById('itemSortOrder');
+const itemImgUrl = document.getElementById('itemImgUrl');
+const itemIsActive = document.getElementById('itemIsActive');
 
 
 // ===== TOKEN =====
-function getToken()       { return localStorage.getItem('token'); }
+function getToken() { return localStorage.getItem('token'); }
 function saveToken(token) { localStorage.setItem('token', token); }
-function clearToken()     { localStorage.removeItem('token'); }
+function clearToken() { localStorage.removeItem('token'); }
 
 function authHeaders() {
     return {
@@ -171,9 +171,9 @@ function renderOrders(orders) {
         `).join('');
 
         const statusLabel = {
-            pending:   '⏰ Pending',
+            pending: '⏰ Pending',
             preparing: '📦 Preparing',
-            ready:     '✅ Ready',
+            ready: '✅ Ready',
             delivered: '🚚 Delivered',
         }[displayStatus] ?? displayStatus;
 
@@ -223,11 +223,11 @@ function renderOrders(orders) {
 
 // ===== TAB COUNTERY =====
 function updateTabCounters() {
-    allTab.textContent        = `All Orders (${document.querySelectorAll('.order-card').length})`;
-    pendingTab.textContent    = `Pending (${document.querySelectorAll('.order-card[data-status="pending"]').length})`;
-    preparingTab.textContent  = `Preparing (${document.querySelectorAll('.order-card[data-status="preparing"]').length})`;
-    readyTab.textContent      = `Ready (${document.querySelectorAll('.order-card[data-status="ready"]').length})`;
-    deliveredTab.textContent  = `Delivered (${document.querySelectorAll('.order-card[data-status="delivered"]').length})`;
+    allTab.textContent = `All Orders (${document.querySelectorAll('.order-card').length})`;
+    pendingTab.textContent = `Pending (${document.querySelectorAll('.order-card[data-status="pending"]').length})`;
+    preparingTab.textContent = `Preparing (${document.querySelectorAll('.order-card[data-status="preparing"]').length})`;
+    readyTab.textContent = `Ready (${document.querySelectorAll('.order-card[data-status="ready"]').length})`;
+    deliveredTab.textContent = `Delivered (${document.querySelectorAll('.order-card[data-status="delivered"]').length})`;
 }
 
 
@@ -336,13 +336,17 @@ clearAllBtn.addEventListener('click', () => {
 
 
 // ===== LOGIN =====
+document.getElementById('logoutBtn').addEventListener('click', () => {
+    logout();
+});
+
 loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const email     = loginForm.querySelector('input[type="email"]').value.trim();
-    const password  = passwordInput.value;
+    const email = loginForm.querySelector('input[type="email"]').value.trim();
+    const password = passwordInput.value;
     const submitBtn = loginForm.querySelector('.btn-login');
 
-    submitBtn.disabled   = true;
+    submitBtn.disabled = true;
     submitBtn.textContent = 'Logging in...';
 
     try {
@@ -364,15 +368,15 @@ loginForm.addEventListener('submit', async (e) => {
     } catch {
         alert('Server nie je dostupný.');
     } finally {
-        submitBtn.disabled   = false;
+        submitBtn.disabled = false;
         submitBtn.textContent = 'Login';
     }
 });
 
 togglePassword.addEventListener('click', () => {
     const isPassword = passwordInput.type === 'password';
-    passwordInput.type           = isPassword ? 'text' : 'password';
-    togglePassword.textContent   = isPassword ? 'hide' : 'show';
+    passwordInput.type = isPassword ? 'text' : 'password';
+    togglePassword.textContent = isPassword ? 'hide' : 'show';
 });
 
 if (getToken()) {
@@ -386,7 +390,7 @@ if (getToken()) {
 // ===== MENU CARD EVENT DELEGATION =====
 // Jeden listener prežije každý re-render menuItemsGrid
 menuItemsGrid.addEventListener('click', (e) => {
-    const editBtn   = e.target.closest('.btn-edit');
+    const editBtn = e.target.closest('.btn-edit');
     const deleteBtn = e.target.closest('.btn-danger-sm');
 
     if (editBtn) {
@@ -397,7 +401,7 @@ menuItemsGrid.addEventListener('click', (e) => {
 });
 // ============================================================
 
-let allMenuItems   = [];
+let allMenuItems = [];
 let pendingDeleteId = null;
 
 async function loadMenuItems() {
@@ -437,20 +441,20 @@ async function refreshCategoryOptions() {
             opt.value = c;
             categoryDatalist.appendChild(opt);
         });
-    } catch {}
+    } catch { }
 }
 
 // ===== DRAG & DROP STATE =====
 let dragSrcCard = null;
-let dragSrcId   = null;
+let dragSrcId = null;
 
 function renderMenuItems() {
-    const filterCat     = menuCategoryFilter.value;
-    const showInactive  = showInactiveCheck.checked;
+    const filterCat = menuCategoryFilter.value;
+    const showInactive = showInactiveCheck.checked;
 
     let items = allMenuItems;
-    if (!showInactive)   items = items.filter(i => i.isActive);
-    if (filterCat)       items = items.filter(i => i.category === filterCat);
+    if (!showInactive) items = items.filter(i => i.isActive);
+    if (filterCat) items = items.filter(i => i.category === filterCat);
 
     menuItemsGrid.innerHTML = '';
 
@@ -506,7 +510,7 @@ function renderMenuItems() {
             // Drag events
             card.addEventListener('dragstart', (e) => {
                 dragSrcCard = card;
-                dragSrcId   = item.id;
+                dragSrcId = item.id;
                 e.dataTransfer.effectAllowed = 'move';
                 e.dataTransfer.setData('text/plain', item.id);
                 setTimeout(() => card.classList.add('dragging'), 0);
@@ -515,7 +519,7 @@ function renderMenuItems() {
                 card.classList.remove('dragging');
                 grid.querySelectorAll('.menu-card').forEach(c => c.classList.remove('drag-over'));
                 dragSrcCard = null;
-                dragSrcId   = null;
+                dragSrcId = null;
             });
             card.addEventListener('dragover', (e) => {
                 e.preventDefault();
@@ -535,7 +539,7 @@ function renderMenuItems() {
 
                 // Reorder in DOM
                 const cards = [...grid.querySelectorAll('.menu-card')];
-                const srcIdx  = cards.indexOf(dragSrcCard);
+                const srcIdx = cards.indexOf(dragSrcCard);
                 const destIdx = cards.indexOf(card);
 
                 if (srcIdx < destIdx) {
@@ -581,20 +585,20 @@ async function saveMenuOrder(grid) {
 
 
 function escapeHtml(str) {
-    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 
 // ===== MENU MODAL — OPEN/CLOSE =====
 function openAddModal() {
-    editItemId.value      = '';
-    itemName.value        = '';
-    itemCategory.value    = '';
+    editItemId.value = '';
+    itemName.value = '';
+    itemCategory.value = '';
     itemDescription.value = '';
-    itemPrice.value       = '';
-    itemSortOrder.value   = '0';
-    itemImgUrl.value      = '';
-    itemIsActive.checked  = true;
+    itemPrice.value = '';
+    itemSortOrder.value = '0';
+    itemImgUrl.value = '';
+    itemIsActive.checked = true;
     formError.textContent = '';
     modalTitle.textContent = 'Add Menu Item';
     menuModal.style.display = 'flex';
@@ -604,14 +608,14 @@ function openEditModal(id) {
     const item = allMenuItems.find(i => Number(i.id) === Number(id));
     if (!item) return;
 
-    editItemId.value      = item.id;
-    itemName.value        = item.name;
-    itemCategory.value    = item.category;
+    editItemId.value = item.id;
+    itemName.value = item.name;
+    itemCategory.value = item.category;
     itemDescription.value = item.description ?? '';
-    itemPrice.value       = Number(item.price).toFixed(2);
-    itemSortOrder.value   = item.sortOrder ?? 0;
-    itemImgUrl.value      = item.imgUrl ?? '';
-    itemIsActive.checked  = item.isActive;
+    itemPrice.value = Number(item.price).toFixed(2);
+    itemSortOrder.value = item.sortOrder ?? 0;
+    itemImgUrl.value = item.imgUrl ?? '';
+    itemIsActive.checked = item.isActive;
     formError.textContent = '';
     modalTitle.textContent = 'Edit Menu Item';
     menuModal.style.display = 'flex';
@@ -629,15 +633,15 @@ menuModal.addEventListener('click', e => { if (e.target === menuModal) closeModa
 
 // ===== MENU MODAL — SAVE =====
 modalSave.addEventListener('click', async () => {
-    const id   = editItemId.value ? Number(editItemId.value) : null;
+    const id = editItemId.value ? Number(editItemId.value) : null;
     const name = itemName.value.trim();
-    const cat  = itemCategory.value.trim();
+    const cat = itemCategory.value.trim();
     const price = parseFloat(itemPrice.value);
 
     formError.textContent = '';
 
-    if (!name)          { formError.textContent = 'Name is required.'; return; }
-    if (!cat)           { formError.textContent = 'Category is required.'; return; }
+    if (!name) { formError.textContent = 'Name is required.'; return; }
+    if (!cat) { formError.textContent = 'Category is required.'; return; }
     if (isNaN(price) || price < 0) { formError.textContent = 'Valid price required.'; return; }
 
     const payload = {
@@ -645,16 +649,16 @@ modalSave.addEventListener('click', async () => {
         category: cat,
         description: itemDescription.value.trim(),
         price,
-        imgUrl:    itemImgUrl.value.trim(),
-        isActive:  itemIsActive.checked,
+        imgUrl: itemImgUrl.value.trim(),
+        isActive: itemIsActive.checked,
         sortOrder: parseInt(itemSortOrder.value) || 0,
     };
 
     modalSave.disabled = true;
     try {
-        const url    = id ? `${API}/menu/${id}` : `${API}/menu`;
+        const url = id ? `${API}/menu/${id}` : `${API}/menu`;
         const method = id ? 'PUT' : 'POST';
-        const res    = await fetch(url, { method, headers: authHeaders(), body: JSON.stringify(payload) });
+        const res = await fetch(url, { method, headers: authHeaders(), body: JSON.stringify(payload) });
 
         if (res.status === 401) { logout(); return; }
         if (!res.ok) {
@@ -718,28 +722,28 @@ showInactiveCheck.addEventListener('change', renderMenuItems);
 // ============================================================
 
 // DOM refs — tables
-const tablesGrid            = document.getElementById('tablesGrid');
-const addTableBtn           = document.getElementById('addTableBtn');
+const tablesGrid = document.getElementById('tablesGrid');
+const addTableBtn = document.getElementById('addTableBtn');
 const showInactiveTablesChk = document.getElementById('showInactiveTables');
 
 // Table modal
-const tableModal        = document.getElementById('tableModal');
-const tableModalTitle   = document.getElementById('tableModalTitle');
-const tableModalClose   = document.getElementById('tableModalClose');
-const tableModalCancel  = document.getElementById('tableModalCancel');
-const tableModalSave    = document.getElementById('tableModalSave');
-const tableFormError    = document.getElementById('tableFormError');
-const editTableId       = document.getElementById('editTableId');
-const tableNumber       = document.getElementById('tableNumber');
-const tableIsActive     = document.getElementById('tableIsActive');
-const tableActiveGroup  = document.getElementById('tableActiveGroup');
+const tableModal = document.getElementById('tableModal');
+const tableModalTitle = document.getElementById('tableModalTitle');
+const tableModalClose = document.getElementById('tableModalClose');
+const tableModalCancel = document.getElementById('tableModalCancel');
+const tableModalSave = document.getElementById('tableModalSave');
+const tableFormError = document.getElementById('tableFormError');
+const editTableId = document.getElementById('editTableId');
+const tableNumber = document.getElementById('tableNumber');
+const tableIsActive = document.getElementById('tableIsActive');
+const tableActiveGroup = document.getElementById('tableActiveGroup');
 
 // Delete modal
-const deleteTableModal      = document.getElementById('deleteTableModal');
-const deleteTableCancelBtn  = document.getElementById('deleteTableCancelBtn');
+const deleteTableModal = document.getElementById('deleteTableModal');
+const deleteTableCancelBtn = document.getElementById('deleteTableCancelBtn');
 const deleteTableConfirmBtn = document.getElementById('deleteTableConfirmBtn');
 
-let allTables       = [];
+let allTables = [];
 let pendingDeleteTableId = null;
 
 async function loadTables() {
@@ -796,14 +800,14 @@ function renderTables() {
 
 // Event delegation on tablesGrid
 tablesGrid.addEventListener('click', async (e) => {
-    const editBtn   = e.target.closest('[data-table-id].btn-edit');
+    const editBtn = e.target.closest('[data-table-id].btn-edit');
     const toggleBtn = e.target.closest('.btn-toggle[data-table-id]');
     const deleteBtn = e.target.closest('[data-table-delete-id]');
 
     if (editBtn) {
         openEditTableModal(Number(editBtn.dataset.tableId));
     } else if (toggleBtn) {
-        const id       = Number(toggleBtn.dataset.tableId);
+        const id = Number(toggleBtn.dataset.tableId);
         const isActive = toggleBtn.dataset.active === 'true';
         await quickToggleTable(id, !isActive);
     } else if (deleteBtn) {
@@ -829,8 +833,8 @@ async function quickToggleTable(id, isActive) {
 
 // ===== TABLE MODAL =====
 function openAddTableModal() {
-    editTableId.value     = '';
-    tableNumber.value     = '';
+    editTableId.value = '';
+    tableNumber.value = '';
     tableIsActive.checked = true;
     tableActiveGroup.style.display = 'none';
     tableFormError.textContent = '';
@@ -842,8 +846,8 @@ function openAddTableModal() {
 function openEditTableModal(id) {
     const table = allTables.find(t => Number(t.id) === id);
     if (!table) return;
-    editTableId.value     = table.id;
-    tableNumber.value     = table.number;
+    editTableId.value = table.id;
+    tableNumber.value = table.number;
     tableIsActive.checked = table.isActive;
     tableActiveGroup.style.display = '';
     tableFormError.textContent = '';
@@ -862,7 +866,7 @@ tableModalCancel.addEventListener('click', closeTableModal);
 tableModal.addEventListener('click', e => { if (e.target === tableModal) closeTableModal(); });
 
 tableModalSave.addEventListener('click', async () => {
-    const id  = editTableId.value ? Number(editTableId.value) : null;
+    const id = editTableId.value ? Number(editTableId.value) : null;
     const num = parseInt(tableNumber.value);
 
     tableFormError.textContent = '';
@@ -874,9 +878,9 @@ tableModalSave.addEventListener('click', async () => {
 
     tableModalSave.disabled = true;
     try {
-        const url    = id ? `${API}/tables/${id}` : `${API}/tables`;
+        const url = id ? `${API}/tables/${id}` : `${API}/tables`;
         const method = id ? 'PUT' : 'POST';
-        const res    = await fetch(url, { method, headers: authHeaders(), body: JSON.stringify(payload) });
+        const res = await fetch(url, { method, headers: authHeaders(), body: JSON.stringify(payload) });
 
         if (res.status === 401) { logout(); return; }
         if (!res.ok) {

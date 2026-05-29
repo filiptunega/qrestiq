@@ -20,12 +20,15 @@
     -webkit-tap-highlight-color: transparent;
 }
 
+html {
+    overflow-x: hidden;
+}
+
 body {
     margin: 0;
     font-family: 'Inter', sans-serif;
     background: var(--bg);
     color: var(--primary);
-    /* overflow-x: hidden removed – it clips the horizontal chip scroll */
     padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
 }
 
@@ -68,7 +71,6 @@ body.no-scroll {
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
-    width: 100%;
     overflow: hidden;
 }
 
@@ -76,14 +78,11 @@ body.no-scroll {
     display: flex;
     flex-wrap: nowrap;
     gap: 8px;
-    overflow-x: scroll;
-    overflow-y: visible;
+    overflow-x: auto;
     padding: 10px 16px;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     scroll-behavior: smooth;
-    width: 100%;
-    box-sizing: border-box;
 }
 
 .chips::-webkit-scrollbar {
@@ -92,7 +91,7 @@ body.no-scroll {
 
 .chip {
     flex: 0 0 auto;
-    padding: 10px 16px;
+    padding: 10px 20px;
     min-height: 44px;
     display: inline-flex;
     align-items: center;
@@ -119,7 +118,6 @@ body.no-scroll {
     transform: scale(1.04);
 }
 
-/* On small screens make chips a touch more compact */
 @media (max-width: 380px) {
     .chip {
         padding: 9px 15px;

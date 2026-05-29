@@ -141,7 +141,53 @@ tableInput.addEventListener('input', () => {
     }
 });
 
+// ===== SKELETON LOADING =====
+function showSkeleton() {
+    // Chips skeleton
+    categoriesEl.innerHTML = '';
+    for (let i = 0; i < 5; i++) {
+        const s = document.createElement('div');
+        s.className = 'chip-skeleton skeleton';
+        categoriesEl.appendChild(s);
+    }
+
+    // Menu skeleton – 2 sections, 3 cards each
+    menuEl.innerHTML = '';
+    for (let s = 0; s < 2; s++) {
+        const section = document.createElement('div');
+        section.className = 'skeleton-section skeleton-container';
+        const heading = document.createElement('div');
+        heading.className = 'skeleton-heading skeleton';
+        section.appendChild(heading);
+        for (let c = 0; c < 3; c++) {
+            section.innerHTML += `
+                <div class="skeleton-card">
+                    <div class="skeleton-img skeleton"></div>
+                    <div class="skeleton-lines">
+                        <div class="skeleton-line-title skeleton"></div>
+                        <div class="skeleton-line-desc skeleton"></div>
+                        <div class="skeleton-line-desc2 skeleton"></div>
+                        <div class="skeleton-line-price skeleton"></div>
+                    </div>
+                </div>`;
+        }
+        menuEl.appendChild(section);
+    }
+}
+
+function hideSkeleton() {
+    // Vyčisti chip skeletony
+    categoriesEl.innerHTML = '';
+    // Vybledni a odstráň menu skeleton sekcie
+    document.querySelectorAll('.skeleton-container').forEach(el => {
+        el.classList.add('hidden');
+        setTimeout(() => el.remove(), 300);
+    });
+}
+
 // ===== NAČÍTANIE MENU =====
+showSkeleton();
+
 fetch(`${API}/menu/grouped`)
     .then(res => res.json())
     .then(grouped => {
@@ -151,12 +197,14 @@ fetch(`${API}/menu/grouped`)
             itemLookup[item.id] = item;
         });
 
+        hideSkeleton();
         renderCategories();
         renderAllMenu();
         initScrollSpy();
     })
     .catch(err => {
         console.error('Error loading menu:', err);
+        hideSkeleton();
         showToast('Nepodarilo sa načítať menu.', 'error');
     });
 
